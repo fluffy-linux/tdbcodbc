@@ -216,7 +216,7 @@ evaluates it without preparing it. The statement is not tokenized and must
 not contain variable substitutions.  Evaluating the \fIsqlStatement\fR
 produces a result set of zero or more rows.  The result of the command is a
 list of dictionaries, with one list element per row in the result set (in
-a similar format to the list returned by \fI$connection allrows -as dicts\fI).
+a similar format to the list returned by \fI$connection allrows -as dicts\fR).
 \fIThis command is not recommended\fR for anything where the usual
 \fIprepare\fR or \fIpreparecall\fR methods work correctly. It is
 provided so that data management language statements that are not
