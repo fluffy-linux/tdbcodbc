@@ -52,6 +52,10 @@
 #   endif
 #endif
 
+#if (TCL_MAJOR_VERSION == 8) && (TCL_MINOR_VERSION < 7) && !defined(Tcl_Size)
+#    define Tcl_Size int
+#endif
+
 /* Static data contained in this file */
 
 TCL_DECLARE_MUTEX(hEnvMutex);	/* Mutex protecting the environment handle
@@ -2584,14 +2588,14 @@ StatementConstructor(
     ConnectionData* cdata;	/* The connection object's data */
     StatementData* sdata;	/* The statement's object data */
     Tcl_Obj* tokens = NULL;	/* The tokens of the statement to be prepared */
-    int tokenc;			/* Length of the 'tokens' list */
+    Tcl_Size tokenc;			/* Length of the 'tokens' list */
     Tcl_Obj** tokenv;		/* Exploded tokens from the list */
     Tcl_Obj* nativeSql;		/* SQL statement mapped to ODBC form */
     char* tokenStr;		/* Token string */
     size_t tokenLen;		/* Length of a token */
     RETCODE rc;			/* Return code from ODBC */
     SQLSMALLINT nParams;	/* Number of parameters in the ODBC statement */
-    int i, j;
+    Tcl_Size i, j;
 
     /* Find the connection object, and get its data. */
 
@@ -2828,8 +2832,8 @@ StatementParamListMethod(
 				/* The current statement object */
     StatementData* sdata;	/* The current statement */
     Tcl_Obj **paramNames;	/* Parameter list to the current statement */
-    int nParams;	/* Parameter count for the current statement */
-    int i;		/* Current parameter index */
+    Tcl_Size nParams;	/* Parameter count for the current statement */
+    Tcl_Size i;		/* Current parameter index */
     Tcl_Obj* retval;		/* Return value from this command */
 
     sdata = (StatementData*) Tcl_ObjectGetMetadata(thisObject,
@@ -2885,7 +2889,7 @@ StatementParamtypeMethod(
     StatementData* sdata;	/* The current statement */
     int matchCount = 0;		/* The number of variables in the given
 				 * statement that match the given one */
-    int nParams;		/* Number of parameters to the statement */
+    Tcl_Size nParams;		/* Number of parameters to the statement */
     const char* paramName;	/* Name of the parameter being set */
     Tcl_Obj* targetNameObj;	/* Name of the ith parameter in the statement */
     const char* targetName;	/* Name of a candidate parameter in the
@@ -3750,7 +3754,7 @@ ResultSetConstructor(
     ConnectionData* cdata;	/* The ODBC connection object's data */
     StatementData* sdata;	/* The statement object's data */
     ResultSetData* rdata;	/* THe result set object's data */
-    int nParams;		/* Number of substituted parameters in
+    Tcl_Size nParams;		/* Number of substituted parameters in
 				 * the statement */
     int nBound;			/* Number of substituted parameters that
 				 * have been bound successfully */
@@ -4292,7 +4296,7 @@ ResultSetNextrowMethod(
     Tcl_Obj** literals = pidata->literals;
 				/* Literal pool */
 
-    int nColumns;		/* Number of columns in the result set */
+    Tcl_Size nColumns;		/* Number of columns in the result set */
     Tcl_Obj* colName;		/* Name of the current column */
     Tcl_Obj* resultRow;		/* Row of the result set under construction */
 
@@ -4786,8 +4790,8 @@ static void
 FreeBoundParameters(
     ResultSetData* rdata	/* Result set being abandoned */
 ) {
-    int nParams;
-    int i;
+    Tcl_Size nParams;
+    Tcl_Size i;
     if (rdata->bindStrings != NULL) {
 	Tcl_ListObjLength(NULL, rdata->sdata->subVars, &nParams);
 	for (i = 0; i < nParams; ++i) {
@@ -4834,7 +4838,7 @@ DatasourcesObjCmd(
     SQLSMALLINT initDirection = SQL_FETCH_FIRST;
     SQLSMALLINT direction;
     static const struct flag {
-	const char* name;
+	const char* const name;
 	SQLSMALLINT value;
     } flags[] = {
 	{ "-system", SQL_FETCH_FIRST_SYSTEM },
