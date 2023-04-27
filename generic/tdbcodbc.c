@@ -1968,7 +1968,7 @@ ConnectionConstructor(
 				/* Per-interp data for the ODBC package */
     Tcl_Object thisObject = Tcl_ObjectContextObject(objectContext);
 				/* The current connection object */
-    int skip = Tcl_ObjectContextSkippedArgs(objectContext);
+    Tcl_Size skip = Tcl_ObjectContextSkippedArgs(objectContext);
 				/* Number of leading args to skip */
     SQLHDBC hDBC = SQL_NULL_HDBC;
 				/* Handle to the database connection */
@@ -2581,7 +2581,7 @@ StatementConstructor(
 ) {
     Tcl_Object thisObject = Tcl_ObjectContextObject(context);
 				/* The current statement object */
-    int skip = Tcl_ObjectContextSkippedArgs(context);
+    Tcl_Size skip = Tcl_ObjectContextSkippedArgs(context);
 				/* The number of args to skip */
     Tcl_Object connectionObject;
 				/* The database connection as a Tcl_Object */
@@ -3016,7 +3016,7 @@ TablesStatementConstructor(
 
     Tcl_Object thisObject = Tcl_ObjectContextObject(context);
 				/* The current statement object */
-    int skip = Tcl_ObjectContextSkippedArgs(context);
+    Tcl_Size skip = Tcl_ObjectContextSkippedArgs(context);
 				/* The number of initial args to this call */
     Tcl_Object connectionObject;
 				/* The database connection as a Tcl_Object */
@@ -3116,7 +3116,7 @@ ColumnsStatementConstructor(
 
     Tcl_Object thisObject = Tcl_ObjectContextObject(context);
 				/* The current statement object */
-    int skip = Tcl_ObjectContextSkippedArgs(context);
+    Tcl_Size skip = Tcl_ObjectContextSkippedArgs(context);
 				/* The number of parameters to skip */
     Tcl_Object connectionObject;
 				/* The database connection as a Tcl_Object */
@@ -3219,7 +3219,7 @@ PrimarykeysStatementConstructor(
 
     Tcl_Object thisObject = Tcl_ObjectContextObject(context);
 				/* The current statement object */
-    int skip = Tcl_ObjectContextSkippedArgs(context);
+    Tcl_Size skip = Tcl_ObjectContextSkippedArgs(context);
 				/* The number of parameters to skip */
     Tcl_Object connectionObject;
 				/* The database connection as a Tcl_Object */
@@ -3321,7 +3321,7 @@ ForeignkeysStatementConstructor(
 
     Tcl_Object thisObject = Tcl_ObjectContextObject(context);
 				/* The current statement object */
-    int skip = Tcl_ObjectContextSkippedArgs(context);
+    Tcl_Size skip = Tcl_ObjectContextSkippedArgs(context);
 				/* The number of parameters to skip */
     Tcl_Object connectionObject;
 				/* The database connection as a Tcl_Object */
@@ -3463,7 +3463,7 @@ EvaldirectStatementConstructor(
 
     Tcl_Object thisObject = Tcl_ObjectContextObject(context);
 				/* The current statement object */
-    int skip = Tcl_ObjectContextSkippedArgs(context);
+    Tcl_Size skip = Tcl_ObjectContextSkippedArgs(context);
 				/* The number of parameters to skip */
     Tcl_Object connectionObject;
 				/* The database connection as a Tcl_Object */
@@ -3571,7 +3571,7 @@ TypesStatementConstructor(
 
     Tcl_Object thisObject = Tcl_ObjectContextObject(context);
 				/* The current statement object */
-    int skip = Tcl_ObjectContextSkippedArgs(context);
+    Tcl_Size skip = Tcl_ObjectContextSkippedArgs(context);
 				/* The number of leading args to skip */
     Tcl_Object connectionObject;
 				/* The database connection as a Tcl_Object */
@@ -3747,7 +3747,7 @@ ResultSetConstructor(
 
     Tcl_Object thisObject = Tcl_ObjectContextObject(context);
 				/* The current result set object */
-    int skip = Tcl_ObjectContextSkippedArgs(context);
+    Tcl_Size skip = Tcl_ObjectContextSkippedArgs(context);
 				/* Number of skipped args in the
 				 * method invocation */
     Tcl_Object statementObject;	/* The current statement object */
@@ -3756,7 +3756,7 @@ ResultSetConstructor(
     ResultSetData* rdata;	/* THe result set object's data */
     Tcl_Size nParams;		/* Number of substituted parameters in
 				 * the statement */
-    int nBound;			/* Number of substituted parameters that
+    Tcl_Size nBound;			/* Number of substituted parameters that
 				 * have been bound successfully */
     SQLSMALLINT dataType;	/* Data type of a parameter */
     Tcl_Obj* paramNameObj;	/* Name of a substituted parameter */
@@ -3766,12 +3766,12 @@ ResultSetConstructor(
     size_t paramLen;		/* String length of the parameter value */
     Tcl_DString paramExternal;	/* Substituted parameter, converted to
 				 * system encoding */
-    int paramExternalLen;	/* Length of the substituted parameter
+    Tcl_Size paramExternalLen;	/* Length of the substituted parameter
 				 * after conversion */
     SQLRETURN rc;		/* Return code from ODBC calls */
     unsigned char* byteArrayPtr; /* Pointer to a BINARY or VARBINARY
 				 * parameter, expressed as a byte array.*/
-    int i;
+    Tcl_Size i;
 
     /* Check parameter count */
 
