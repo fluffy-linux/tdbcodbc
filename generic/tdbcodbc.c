@@ -414,7 +414,7 @@ static int GetResultSetDescription(Tcl_Interp* interp, ResultSetData* rdata);
 static int ConfigureConnection(Tcl_Interp* interp,
 			       SQLHDBC hDBC,
 			       PerInterpData* pidata,
-			       size_t objc, Tcl_Obj *const objv[],
+			       Tcl_Size objc, Tcl_Obj *const objv[],
 			       SQLUSMALLINT* connectFlagsPtr,
 			       HWND* hParentWindowPtr);
 static int ConnectionConstructor(void *clientData, Tcl_Interp* interp,
@@ -1590,7 +1590,7 @@ ConfigureConnection(
     Tcl_Interp* interp,		/* Tcl interpreter */
     SQLHDBC hDBC,		/* Handle to the connection */
     PerInterpData* pidata,	/* Package-global data */
-    size_t objc,			/* Option count */
+    Tcl_Size objc,			/* Option count */
     Tcl_Obj *const objv[],	/* Option vector */
     SQLUSMALLINT* connectFlagsPtr,
 				/* Pointer to the driver connection options */
