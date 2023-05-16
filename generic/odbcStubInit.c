@@ -21,6 +21,10 @@
 #endif
 #include "fakesql.h"
 
+#if defined(_WIN32) && defined(_MSC_VER) && _MSC_VER < 1900
+#  define snprintf _snprintf
+#endif
+
 /*
  * Static data used in this file
  */
@@ -171,7 +175,7 @@ again:
 	if (abiNum != 0) {
 	    char abiBuffer[16];
 
-	    sprintf(abiBuffer, ".%d", abiNum);
+	    snprintf(abiBuffer, sizeof(abiBuffer), ".%d", abiNum);
 	    Tcl_AppendObjToObj(path, Tcl_NewStringObj(abiBuffer, -1));
 	}
 #endif
@@ -205,7 +209,7 @@ again:
 	    if (abiNum != 0) {
 		char abiBuffer[16];
 
-		sprintf(abiBuffer, ".%d", abiNum);
+		snprintf(abiBuffer, sizeof(abiBuffer), ".%d", abiNum);
 		Tcl_AppendObjToObj(path, Tcl_NewStringObj(abiBuffer, -1));
 	    }
 #endif

@@ -1493,7 +1493,7 @@ GetResultSetDescription(
 
 	    if (!SQL_SUCCEEDED(rc)) {
 		char info[80];
-		sprintf(info, "(describing result column #%d)", i+1);
+		snprintf(info, sizeof(info), "(describing result column #%d)", i+1);
 		TransferSQLError(interp, SQL_HANDLE_STMT, hStmt, info);
 		Tcl_DecrRefCount(colNames);
 		ckfree((char*)rdata->results);
@@ -1526,7 +1526,7 @@ GetResultSetDescription(
 		count = PTR2INT(Tcl_GetHashValue(nameEntry));
 		++count;
 		Tcl_SetHashValue(nameEntry, INT2PTR(count));
-		sprintf(numbuf, "#%d", count);
+		snprintf(numbuf, sizeof(numbuf), "#%d", count);
 		Tcl_AppendToObj(colNameObj, numbuf, -1);
 	    }
 
@@ -4048,7 +4048,7 @@ ResultSetConstructor(
 			      rdata->bindStringLengths + nBound);
 	if (!SQL_SUCCEEDED(rc)) {
 	    char* info = (char *)ckalloc(80 * strlen(paramName));
-	    sprintf(info, "(binding the '%s' parameter)", paramName);
+	    snprintf(info, sizeof(info), "(binding the '%s' parameter)", paramName);
 	    TransferSQLError(interp, SQL_HANDLE_STMT, rdata->hStmt, info);
 	    ckfree(info);
 	    return TCL_ERROR;
@@ -4471,7 +4471,7 @@ GetCell(
 			(SQLPOINTER) &colWide, sizeof(colWide), &colLen);
 	if (!SQL_SUCCEEDED(rc)) {
 	    char info[80];
-	    sprintf(info, "(retrieving result set column #%d)\n", i+1);
+	    snprintf(info, sizeof(info), "(retrieving result set column #%d)\n", i+1);
 	    TransferSQLError(interp, SQL_HANDLE_STMT, rdata->hStmt, info);
 	    return TCL_ERROR;
 	}
@@ -4491,7 +4491,7 @@ GetCell(
 			(SQLPOINTER) &colLong.si, sizeof(colLong.si), &colLen);
 	if (!SQL_SUCCEEDED(rc)) {
 	    char info[80];
-	    sprintf(info, "(retrieving result set column #%d)\n", i+1);
+	    snprintf(info, sizeof(info), "(retrieving result set column #%d)\n", i+1);
 	    TransferSQLError(interp, SQL_HANDLE_STMT, rdata->hStmt, info);
 	    ckfree(info);
 	    return TCL_ERROR;
@@ -4529,7 +4529,7 @@ GetCell(
 			&colLen);
 	if (!SQL_SUCCEEDED(rc)) {
 	    char info[80];
-	    sprintf(info, "(retrieving result set column #%d)\n", i+1);
+	    snprintf(info, sizeof(info), "(retrieving result set column #%d)\n", i+1);
 	    TransferSQLError(interp, SQL_HANDLE_STMT, rdata->hStmt, info);
 	    ckfree(info);
 	    return TCL_ERROR;
@@ -4621,7 +4621,7 @@ GetCell(
 	} while (retry);
 	if (!SQL_SUCCEEDED(rc)) {
 	    char info[80];
-	    sprintf(info, "(retrieving result set column #%d)\n", i+1);
+	    snprintf(info, sizeof(info), "(retrieving result set column #%d)\n", i+1);
 	    TransferSQLError(interp, SQL_HANDLE_STMT, rdata->hStmt, info);
 	    if (colPtr != colBuf) {
 		ckfree((char*) colPtr);
