@@ -4047,8 +4047,8 @@ ResultSetConstructor(
 			      paramExternalLen,
 			      rdata->bindStringLengths + nBound);
 	if (!SQL_SUCCEEDED(rc)) {
-	    char* info = (char *)ckalloc(80 * strlen(paramName));
-	    snprintf(info, sizeof(info), "(binding the '%s' parameter)", paramName);
+	    char* info = (char *)ckalloc(80 + strlen(paramName));
+	    snprintf(info, 80 + strlen(paramName), "(binding the '%s' parameter)", paramName);
 	    TransferSQLError(interp, SQL_HANDLE_STMT, rdata->hStmt, info);
 	    ckfree(info);
 	    return TCL_ERROR;
