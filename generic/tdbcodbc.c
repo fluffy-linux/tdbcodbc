@@ -75,7 +75,7 @@ static size_t sizeofSQLWCHAR = sizeof(SQLWCHAR);
  * Objects to create within the literal pool
  */
 
-const char* const LiteralValues[] = {
+static const char* const LiteralValues[] = {
     "0",
     "1",
     "-encoding",
