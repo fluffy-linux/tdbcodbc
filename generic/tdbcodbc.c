@@ -52,10 +52,6 @@
 #   endif
 #endif
 
-#if (TCL_MAJOR_VERSION == 8) && (TCL_MINOR_VERSION < 7) && !defined(Tcl_Size)
-#    define Tcl_Size int
-#endif
-
 /* Static data contained in this file */
 
 TCL_DECLARE_MUTEX(hEnvMutex);	/* Mutex protecting the environment handle
