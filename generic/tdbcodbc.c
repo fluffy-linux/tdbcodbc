@@ -4062,7 +4062,7 @@ ResultSetConstructor(
 	*/
 	if (sdata->nativeSqlLen > SHRT_MAX) {
 	    Tcl_SetObjResult(interp,
-		    Tcl_NewStringObj("Maximum string length exceeded", -1));
+		    Tcl_NewStringObj("Maximum string length 32767 exceeded", -1));
 	    return TCL_ERROR;
 	}
 
@@ -4077,7 +4077,7 @@ ResultSetConstructor(
 	*/
 	if (sdata->nativeMatchPatLen > SHRT_MAX) {
 	    Tcl_SetObjResult(interp,
-		    Tcl_NewStringObj("Maximum string length exceeded", -1));
+		    Tcl_NewStringObj("Maximum string length 32767 exceeded", -1));
 	    return TCL_ERROR;
 	}
 
@@ -4097,7 +4097,7 @@ ResultSetConstructor(
 	*/
 	if (sdata->nativeSqlLen > SHRT_MAX) {
 	    Tcl_SetObjResult(interp,
-		    Tcl_NewStringObj("Maximum string length exceeded", -1));
+		    Tcl_NewStringObj("Maximum string length 32767 exceeded", -1));
 	    return TCL_ERROR;
 	}
 
@@ -4115,7 +4115,7 @@ ResultSetConstructor(
 	if (sdata->nativeSqlLen > SHRT_MAX
 		|| sdata->nativeMatchPatLen > SHRT_MAX) {
 	    Tcl_SetObjResult(interp,
-		    Tcl_NewStringObj("Maximum string length exceeded", -1));
+		    Tcl_NewStringObj("Maximum string length 32767 exceeded", -1));
 	    return TCL_ERROR;
 	}
 
