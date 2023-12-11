@@ -23,6 +23,7 @@
 #include "tdbcOdbcUuid.h"
 #include <stdio.h>
 #include <string.h>
+#include <limits.h>
 
 #ifdef HAVE_STDINT_H
 #  include <stdint.h>
@@ -1620,7 +1621,7 @@ ConfigureConnection(
     Tcl_Encoding sysEncoding;	/* The system encoding */
     Tcl_Encoding newEncoding;	/* The requested encoding */
     const char* encName;	/* The name of the system encoding */
-    size_t i;
+    Tcl_Size i;
     int j;
     SQLINTEGER mode;		/* Access mode of the database */
     SQLSMALLINT isol;		/* Isolation level */
@@ -3335,7 +3336,7 @@ ForeignkeysStatementConstructor(
 	OPT__END
     };
 
-    size_t i;
+    Tcl_Size i;
     int paramIdx;		/* Index of the current option in the option
 				 * table */
     unsigned char have[OPT__END];
@@ -4054,28 +4055,85 @@ ResultSetConstructor(
     /* Execute the statement */
 
     if (sdata->flags & STATEMENT_FLAG_TABLES) {
+
+	/*
+	* nativeSQLLen is later assigned to a variable of type SQLSMALLINT
+	* This is "short int". So check, if it does not exceed this length.
+	*/
+	if (sdata->nativeSqlLen > SHRT_MAX) {
+	    Tcl_SetObjResult(interp,
+		    Tcl_NewStringObj("Maximum string length exceeded", -1));
+	    return TCL_ERROR;
+	}
+
 	rc = SQLTablesW(rdata->hStmt, NULL, 0, NULL, 0,
-			sdata->nativeSqlW, sdata->nativeSqlLen, NULL, 0);
+			sdata->nativeSqlW, (SQLSMALLINT)sdata->nativeSqlLen, NULL, 0);
+
     } else if (sdata->flags & STATEMENT_FLAG_COLUMNS) {
+
+	/*
+	* nativeMatchPatLen is later assigned to a variable of type SQLSMALLINT
+	* This is "short int". So check, if it does not exceed this length.
+	*/
+	if (sdata->nativeMatchPatLen > SHRT_MAX) {
+	    Tcl_SetObjResult(interp,
+		    Tcl_NewStringObj("Maximum string length exceeded", -1));
+	    return TCL_ERROR;
+	}
+
 	rc = SQLColumnsW(rdata->hStmt, NULL, 0, NULL, 0,
-			 sdata->nativeSqlW, sdata->nativeSqlLen,
-			 sdata->nativeMatchPatternW, sdata->nativeMatchPatLen);
+			 sdata->nativeSqlW, (SQLSMALLINT)sdata->nativeSqlLen,
+			 sdata->nativeMatchPatternW, (SQLSMALLINT)sdata->nativeMatchPatLen);
+
     } else if (sdata->flags & STATEMENT_FLAG_TYPES) {
+
 	rc = SQLGetTypeInfo(rdata->hStmt, sdata->typeNum);
+
     } else if (sdata->flags & STATEMENT_FLAG_PRIMARYKEYS) {
+
+	/*
+	* nativeSQLLen is later assigned to a variable of type SQLSMALLINT
+	* This is "short int". So check, if it does not exceed this length.
+	*/
+	if (sdata->nativeSqlLen > SHRT_MAX) {
+	    Tcl_SetObjResult(interp,
+		    Tcl_NewStringObj("Maximum string length exceeded", -1));
+	    return TCL_ERROR;
+	}
+
 	rc = SQLPrimaryKeysW(rdata->hStmt, NULL, 0, NULL, 0,
-			    sdata->nativeSqlW, sdata->nativeSqlLen);
+			    sdata->nativeSqlW, (SQLSMALLINT)sdata->nativeSqlLen);
+
     } else if (sdata->flags & STATEMENT_FLAG_FOREIGNKEYS) {
+
+
+	/*
+	* nativeSqlLen and nativeMatchPatLen is later assigned to a variable
+	* of type SQLSMALLINT.
+	* This is "short int". So check, if it does not exceed this length.
+	*/
+	if (sdata->nativeSqlLen > SHRT_MAX
+		|| sdata->nativeMatchPatLen > SHRT_MAX) {
+	    Tcl_SetObjResult(interp,
+		    Tcl_NewStringObj("Maximum string length exceeded", -1));
+	    return TCL_ERROR;
+	}
+
 	rc = SQLForeignKeysW(rdata->hStmt, NULL, 0, NULL, 0,
-			     sdata->nativeSqlW, sdata->nativeSqlLen,
+			     sdata->nativeSqlW, (SQLSMALLINT)sdata->nativeSqlLen,
 			     NULL, 0, NULL, 0,
 			     sdata->nativeMatchPatternW,
-			     sdata->nativeMatchPatLen);
+			     (SQLSMALLINT)sdata->nativeMatchPatLen);
+
     } else if (sdata->flags & STATEMENT_FLAG_EVALDIRECT) {
+
 	rc = SQLExecDirectW(rdata->hStmt, sdata->nativeSqlW,
 			    sdata->nativeSqlLen);
+
     } else {
+
 	rc = SQLExecute(rdata->hStmt);
+
     }
     if (!SQL_SUCCEEDED(rc) && rc != SQL_NO_DATA) {
 	TransferSQLError(interp, SQL_HANDLE_STMT, rdata->hStmt,
