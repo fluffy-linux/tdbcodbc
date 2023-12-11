@@ -14,7 +14,8 @@
  */
 
 #ifdef _MSC_VER
-#  define _CRT_SECURE_NO_DEPRECATE
+#  define _CRT_SECURE_NO_WARNINGS
+#  pragma warning(disable:4244)
 #endif
 
 #include <tcl.h>
@@ -194,7 +195,7 @@ typedef struct StatementData {
 				 * statement */
     SQLHSTMT hStmt;		/* Handle to the ODBC statement */
     SQLWCHAR* nativeSqlW;	/* SQL statement as wide chars */
-    size_t nativeSqlLen;		/* Length of the statement */
+    Tcl_Size nativeSqlLen;		/* Length of the statement */
     SQLWCHAR* nativeMatchPatternW;
 				/* Match pattern for metadata queries */
     size_t nativeMatchPatLen;	/* Length of the match pattern */
@@ -389,8 +390,8 @@ static const OdbcConstant OdbcErrorCodeNames[] = {
 
 /* Prototypes for static functions appearing in this file */
 
-static void DStringAppendWChars(Tcl_DString* ds, SQLWCHAR* ws, size_t len);
-static SQLWCHAR* GetWCharStringFromObj(Tcl_Obj* obj, size_t* lengthPtr);
+static void DStringAppendWChars(Tcl_DString* ds, SQLWCHAR* ws, Tcl_Size len);
+static SQLWCHAR* GetWCharStringFromObj(Tcl_Obj* obj, Tcl_Size* lengthPtr);
 
 static void TransferSQLError(Tcl_Interp* interp, SQLSMALLINT handleType,
 			     SQLHANDLE handle, const char* info);
@@ -826,9 +827,9 @@ static void
 DStringAppendWChars(
     Tcl_DString* ds,		/* Output string */
     SQLWCHAR* ws,		/* Input string */
-    size_t len			/* Length of the input string in characters */
+    Tcl_Size len			/* Length of the input string in characters */
 ) {
-    size_t i, bytes;
+    Tcl_Size i, bytes;
     char buf[4] = "";
 
     if (sizeofSQLWCHAR == sizeof(unsigned short)) {
@@ -869,11 +870,11 @@ DStringAppendWChars(
 static SQLWCHAR*
 GetWCharStringFromObj(
     Tcl_Obj* obj,		/* Tcl object whose string rep is desired */
-    size_t* lengthPtr		/* Length of the string */
+    Tcl_Size* lengthPtr		/* Length of the string */
 ) {
     char* bytes = Tcl_GetString(obj);
 				/* UTF-8 representation of the input string */
-    size_t len = obj->length;	/* Length of the input string in bytes */
+    Tcl_Size len = obj->length;	/* Length of the input string in bytes */
     char* end = bytes + len;	/* End of UTF-8 representation */
     SQLWCHAR* retval;		/* Buffer to hold the converted string */
     SQLWCHAR* wcPtr;
@@ -4651,7 +4652,7 @@ GetCell(
 		} else if (dataType == SQL_C_CHAR) {
 		    --offset;
 		} else {
-		    offset -= sizeofSQLWCHAR;
+		    offset -= (SQLINTEGER)sizeofSQLWCHAR;
 		}
 		if (colLen == SQL_NO_TOTAL) {
 		    /*
