@@ -198,7 +198,7 @@ typedef struct StatementData {
     Tcl_Size nativeSqlLen;		/* Length of the statement */
     SQLWCHAR* nativeMatchPatternW;
 				/* Match pattern for metadata queries */
-    size_t nativeMatchPatLen;	/* Length of the match pattern */
+    Tcl_Size nativeMatchPatLen;	/* Length of the match pattern */
     struct ParamData* params;	/* Pointer to an array of ParamData
 				 * structures that describe the data types
 				 * of substituted parameters. */
@@ -1974,7 +1974,7 @@ ConnectionConstructor(
     HWND hParentWindow = NULL;	/* Windows handle of the main window */
     SQLWCHAR* connectionStringReq;
 				/* Connection string requested by the caller */
-    size_t connectionStringReqLen;
+    Tcl_Size connectionStringReqLen;
 				/* Length of the requested connection string */
     SQLWCHAR connectionString[1025*2];
 				/* Connection string actually used */
@@ -3761,7 +3761,7 @@ ResultSetConstructor(
     const char* paramName;	/* Name of a substituted parameter */
     Tcl_Obj* paramValObj;	/* Value of a substituted parameter */
     const char* paramVal;	/* Value of a substituted parameter */
-    size_t paramLen;		/* String length of the parameter value */
+    Tcl_Size paramLen;		/* String length of the parameter value */
     Tcl_DString paramExternal;	/* Substituted parameter, converted to
 				 * system encoding */
     Tcl_Size paramExternalLen;	/* Length of the substituted parameter
@@ -5218,9 +5218,9 @@ DatasourceObjCmdW(
     WCHAR* attributes;		/* NULL-delimited attribute values */
     char errorMessage[SQL_MAX_MESSAGE_LENGTH+1];
 				/* Error message from ODBC operations */
-    size_t driverNameLen;		/* Length of the driver name */
+    Tcl_Size driverNameLen;		/* Length of the driver name */
     Tcl_Obj* attrObj;		/* NULL-delimited attribute values */
-    size_t attrLen;		/* Length of the attribute values */
+    Tcl_Size attrLen;		/* Length of the attribute values */
     const char* sep;		/* Separator for attribute values */
     DWORD errorCode;		/* Error code */
     WORD errorMessageLen;	/* Length of the returned error message */
