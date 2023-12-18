@@ -70,15 +70,12 @@ TDBC_VERSION     = $(TDBC_DOTVERSION:.=)
 TDBC_GENERIC_DIR = $(TDBC_DIR)\generic
 !if $(TCL_MAJOR_VERSION) == 8 || "$(TCL_BUILD_FOR)" == "8"
 TDBCSTUBLIBNAME	 = tdbcstub$(TDBC_VERSION).lib
-!else
-TDBCSTUBLIBNAME	 = tdbcstub.lib
-!endif
-TDBCSTUBLIB 	 = $(TDBC_DIR)\win\$(BUILDDIRTOP)\$(TDBCSTUBLIBNAME)
-!if $(TCL_MAJOR_VERSION) == 8 || "$(TCL_BUILD_FOR)" == "8"
 TDBC_LIB_FILE	 = tdbc$(TDBC_VERSION).dll
 !else
+TDBCSTUBLIBNAME	 = tdbcstub.lib
 TDBC_LIB_FILE	 = tcl9tdbc$(TDBC_VERSION).dll
 !endif
+TDBCSTUBLIB 	 = $(TDBC_DIR)\win\$(BUILDDIRTOP)\$(TDBCSTUBLIBNAME)
 TDBC_BIN_DIR     = $(TDBC_DIR)/win/$(BUILDDIRTOP)
 
 PRJ_INCLUDES	= -I"$(TDBC_GENERIC_DIR)"
@@ -87,15 +84,15 @@ PRJ_INCLUDES	= -I"$(TDBC_GENERIC_DIR)"
 PRJ_LIBS  = $(TDBCSTUBLIB)
 !endif
 
-# Disable standard tes target because we have a custom one.
+# Disable standard test target because we have a custom one
 DISABLE_TARGET_test = 1
 !include "$(_RULESDIR)\targets.vc"
 
-# Install needs some extra default actions.
+# Additional default actions for install
 install: default-install-docs-n
 
 # The TIP 477 generation of pkgIndex.tcl from pkgIndex.tcl.in does not include
-# all replacements below so define our own it.
+# all replacements below so define our own target.
 pkgindex:   $(OUT_DIR)\pkgIndex.tcl
 $(OUT_DIR)\pkgIndex.tcl: $(ROOT)\pkgIndex.tcl.in
 	@nmakehlp -s << $** > $@
