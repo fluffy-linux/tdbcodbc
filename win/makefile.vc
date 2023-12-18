@@ -133,7 +133,7 @@ test-jet: setup $(PROJECT)
         @set PATH=$(_TCLDIR)\win\$(BUILDDIRTOP);$(PATH)
 	$(DEBUGGER) $(TCLSH) "$(ROOT:\=/)/tests/all.tcl" $(TESTFLAGS) \
 		-load "package ifneeded tdbc::odbc $(DOTVERSION) \
-			{source {$(LIBDIR:\=/)/tdbcodbc.tcl};load {$(PRJLIB:\=/)} $(PROJECT)};\
+			{source {$(LIBDIR:\=/)/tdbcodbc.tcl};load {$(PRJLIB:\=/)} [string totitle $(PROJECT)]};\
 		package ifneeded tdbc $(TDBC_DOTVERSION) \
 			{source {$(TDBC_BIN_DIR:\=/)/tdbc.tcl};load {$(TDBC_BIN_DIR:\=/)/$(TDBC_LIB_FILE)} Tdbc}"
 !endif
@@ -153,7 +153,7 @@ test-sqlserver: setup $(PROJECT)
         @set PATH=$(_TCLDIR)\win\$(BUILDDIRTOP);$(PATH)
 	$(DEBUGGER) $(TCLSH) "$(ROOT:\=/)/tests/all.tcl" $(TESTFLAGS) \
 		-load "package ifneeded tdbc::odbc $(DOTVERSION) \
-			{source {$(LIBDIR:\=/)/tdbcodbc.tcl};load {$(PRJLIB:\=/)} $(PROJECT)};\
+			{source {$(LIBDIR:\=/)/tdbcodbc.tcl};load {$(PRJLIB:\=/)} [string totitle $(PROJECT)]};\
 		package ifneeded tdbc $(TDBC_DOTVERSION) \
 			{source {$(TDBC_BIN_DIR:\=/)/tdbc.tcl};load {$(TDBC_BIN_DIR:\=/)/$(TDBC_LIB_FILE)} Tdbc}"
 !endif
@@ -173,7 +173,7 @@ test-sqlite: setup $(PROJECT)
         @set PATH=$(_TCLDIR)\win\$(BUILDDIRTOP);$(PATH)
 	$(DEBUGGER) $(TCLSH) "$(ROOT:\=/)/tests/all.tcl" $(TESTFLAGS) \
 		-load "package ifneeded tdbc::odbc $(DOTVERSION) \
-			{source {$(LIBDIR:\=/)/tdbcodbc.tcl};load {$(PRJLIB:\=/)} $(PROJECT)};\
+			{source {$(LIBDIR:\=/)/tdbcodbc.tcl};load {$(PRJLIB:\=/)} [string totitle $(PROJECT)]};\
 		package ifneeded tdbc $(TDBC_DOTVERSION) \
 			{source {$(TDBC_BIN_DIR:\=/)/tdbc.tcl};load {$(TDBC_BIN_DIR:\=/)/$(TDBC_LIB_FILE)} Tdbc}"
 !endif
