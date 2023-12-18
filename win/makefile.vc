@@ -135,7 +135,7 @@ test-jet: setup $(PROJECT)
 		-load "package ifneeded tdbc::odbc $(DOTVERSION) \
 			{source {$(LIBDIR:\=/)/tdbcodbc.tcl};load {$(PRJLIB:\=/)} $(PROJECT)};\
 		package ifneeded tdbc $(TDBC_DOTVERSION) \
-			{source {$(TDBC_BIN_DIR:\=/)/tdbc.tcl};load {$(TDBC_BIN_DIR:\=/)/$(TDBC_LIB_FILE)} tdbc}"
+			{source {$(TDBC_BIN_DIR:\=/)/tdbc.tcl};load {$(TDBC_BIN_DIR:\=/)/$(TDBC_LIB_FILE)} Tdbc}"
 !endif
 
 test-sqlserver: setup $(PROJECT)
@@ -155,7 +155,7 @@ test-sqlserver: setup $(PROJECT)
 		-load "package ifneeded tdbc::odbc $(DOTVERSION) \
 			{source {$(LIBDIR:\=/)/tdbcodbc.tcl};load {$(PRJLIB:\=/)} $(PROJECT)};\
 		package ifneeded tdbc $(TDBC_DOTVERSION) \
-			{source {$(TDBC_BIN_DIR:\=/)/tdbc.tcl};load {$(TDBC_BIN_DIR:\=/)/$(TDBC_LIB_FILE)} tdbc}"
+			{source {$(TDBC_BIN_DIR:\=/)/tdbc.tcl};load {$(TDBC_BIN_DIR:\=/)/$(TDBC_LIB_FILE)} Tdbc}"
 !endif
 
 test-sqlite: setup $(PROJECT)
@@ -175,7 +175,7 @@ test-sqlite: setup $(PROJECT)
 		-load "package ifneeded tdbc::odbc $(DOTVERSION) \
 			{source {$(LIBDIR:\=/)/tdbcodbc.tcl};load {$(PRJLIB:\=/)} $(PROJECT)};\
 		package ifneeded tdbc $(TDBC_DOTVERSION) \
-			{source {$(TDBC_BIN_DIR:\=/)/tdbc.tcl};load {$(TDBC_BIN_DIR:\=/)/$(TDBC_LIB_FILE)} tdbc}"
+			{source {$(TDBC_BIN_DIR:\=/)/tdbc.tcl};load {$(TDBC_BIN_DIR:\=/)/$(TDBC_LIB_FILE)} Tdbc}"
 !endif
 
 
