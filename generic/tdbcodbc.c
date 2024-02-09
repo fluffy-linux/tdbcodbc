@@ -37,6 +37,10 @@
 #  include <windows.h>
 #endif
 
+#if defined(_WIN32) && defined(_MSC_VER) && _MSC_VER < 1900
+#define   snprintf	_snprintf
+#endif
+
 #include "fakesql.h"
 
 #ifndef JOIN
