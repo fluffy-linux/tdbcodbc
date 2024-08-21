@@ -270,7 +270,7 @@ package require tdbc
 
 	# at least if making all parameters 'inout' doesn't work.
 
-        }
+	}
 
     }
 

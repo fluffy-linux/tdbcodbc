@@ -32,7 +32,7 @@ if {![info exists ::env(TDBCODBC_TEST_TYPE)] || $::env(TDBCODBC_TEST_TYPE) eq {d
 if {$::env(TDBCODBC_TEST_TYPE) in {jet sqlserver}} {
     if {$::tcl_platform(platform) ne {windows}} {
 	puts "$::env(TDBCODBC_TEST_TYPE) testing is available on the\
-                     Windows platform only"
+		     Windows platform only"
 	removeDirectory tdbctest
 	cleanupTests
 	return
@@ -2869,7 +2869,7 @@ test tdbc::odbc-20.1b {direct value transfers} {*}{
 		xint1 INT,
 		xsmallint1 SMALLINT,
 		xtinyint1 TINYINT,
-                xbit1 BIT,
+		xbit1 BIT,
 		xdecimal1 DECIMAL(12,6),
 		xmoney1 MONEY,
 		xsmallmoney1 SMALLMONEY,
@@ -3098,23 +3098,23 @@ test tdbc::odbc-27.1a {blobs} {*}{
     -setup {
 	db allrows {
 	    create table blobtest (
-	        id integer primary key,
-                stuff blob
-            )
-        }
+		id integer primary key,
+		stuff blob
+	    )
+	}
 	set testblob [string repeat 0123456789abx 200]
-        db allrows {
-            insert into blobtest(id, stuff) values (1, :testblob)
-        }
+	db allrows {
+	    insert into blobtest(id, stuff) values (1, :testblob)
+	}
     }
     -body {
 	set trouble {}
 	db foreach row {select id, stuff from blobtest} {
-            if {[dict get $row stuff] ne $testblob} {
+	    if {[dict get $row stuff] ne $testblob} {
 		set trouble       "blob is   \"[dict get $row stuff]\""
-                append trouble \n "should be \"" $testblob "\""
+		append trouble \n "should be \"" $testblob "\""
 		append trouble \n "length is [string length \
-                                                  [dict get $row stuff]]"
+						  [dict get $row stuff]]"
 		append trouble \n "should be [string length $testblob]"
 	    }
 	}
@@ -3133,23 +3133,23 @@ test tdbc::odbc-27.1b {blobs} {*}{
     -setup {
 	db allrows {
 	    create table blobtest (
-	        id integer primary key,
-                stuff image
-            )
-        }
+		id integer primary key,
+		stuff image
+	    )
+	}
 	set testblob [string repeat 0123456789abx 200]
-        db allrows {
-            insert into blobtest(id, stuff) values (1, :testblob)
-        }
+	db allrows {
+	    insert into blobtest(id, stuff) values (1, :testblob)
+	}
     }
     -body {
 	set trouble {}
 	db foreach row {select id, stuff from blobtest} {
-            if {[dict get $row stuff] ne $testblob} {
+	    if {[dict get $row stuff] ne $testblob} {
 		set trouble       "blob is   \"[dict get $row stuff]\""
-                append trouble \n "should be \"" $testblob "\""
+		append trouble \n "should be \"" $testblob "\""
 		append trouble \n "length is [string length \
-                                                  [dict get $row stuff]]"
+						  [dict get $row stuff]]"
 		append trouble \n "should be [string length $testblob]"
 	    }
 	}
@@ -3168,14 +3168,14 @@ test tdbc::odbc-27.2a {memos} {*}{
     -setup {
 	db allrows {
 	    create table blobtest (
-	        id integer primary key,
-                stuff memo
-            )
-        }
+		id integer primary key,
+		stuff memo
+	    )
+	}
 	set testblob [string repeat 0123456789abs 200]
-        set stmt [db prepare {
-            insert into blobtest(id, stuff) values (1, :testblob)
-        }]
+	set stmt [db prepare {
+	    insert into blobtest(id, stuff) values (1, :testblob)
+	}]
 	$stmt paramtype testblob longvarchar 65535
 	$stmt allrows
 	$stmt close
@@ -3185,11 +3185,11 @@ test tdbc::odbc-27.2a {memos} {*}{
 	set count 0
 	db foreach row {select id, stuff from blobtest} {
 	    incr count
-            if {[dict get $row stuff] ne $testblob} {
+	    if {[dict get $row stuff] ne $testblob} {
 		set trouble       "blob is   \"[dict get $row stuff]\""
-                append trouble \n "should be \"" $testblob "\""
+		append trouble \n "should be \"" $testblob "\""
 		append trouble \n "length is [string length \
-                                                  [dict get $row stuff]]"
+						  [dict get $row stuff]]"
 		append trouble \n "should be [string length $testblob]"
 	    }
 	}
@@ -3211,23 +3211,23 @@ test tdbc::odbc-27.2b {clobs} {*}{
     -setup {
 	db allrows {
 	    create table blobtest (
-	        id integer primary key,
-                stuff varchar(10240)
-            )
-        }
+		id integer primary key,
+		stuff varchar(10240)
+	    )
+	}
 	set testblob [string repeat 0123456789abc 200]
-        db allrows {
-            insert into blobtest(id, stuff) values (1, :testblob)
-        }
+	db allrows {
+	    insert into blobtest(id, stuff) values (1, :testblob)
+	}
     }
     -body {
 	set trouble {}
 	db foreach row {select id, stuff from blobtest} {
-            if {[dict get $row stuff] ne $testblob} {
+	    if {[dict get $row stuff] ne $testblob} {
 		set trouble       "blob is   \"[dict get $row stuff]\""
-                append trouble \n "should be \"" $testblob "\""
+		append trouble \n "should be \"" $testblob "\""
 		append trouble \n "length is [string length \
-                                                  [dict get $row stuff]]"
+						  [dict get $row stuff]]"
 		append trouble \n "should be [string length $testblob]"
 	    }
 	}
@@ -3246,23 +3246,23 @@ test tdbc::odbc-27.2c {clobs} {*}{
     -setup {
 	db allrows {
 	    create table blobtest (
-	        id integer primary key,
-                stuff nvarchar(max)
-            )
-        }
+		id integer primary key,
+		stuff nvarchar(max)
+	    )
+	}
 	set testblob [string repeat 0123456789abc 200]
-        db allrows {
-            insert into blobtest(id, stuff) values (1, :testblob)
-        }
+	db allrows {
+	    insert into blobtest(id, stuff) values (1, :testblob)
+	}
     }
     -body {
 	set trouble {}
 	db foreach row {select id, stuff from blobtest} {
-            if {[dict get $row stuff] ne $testblob} {
+	    if {[dict get $row stuff] ne $testblob} {
 		set trouble       "blob is   \"[dict get $row stuff]\""
-                append trouble \n "should be \"" $testblob "\""
+		append trouble \n "should be \"" $testblob "\""
 		append trouble \n "length is [string length \
-                                                  [dict get $row stuff]]"
+						  [dict get $row stuff]]"
 		append trouble \n "should be [string length $testblob]"
 	    }
 	}
@@ -3281,23 +3281,23 @@ test tdbc::odbc-27.4 {blobs} {*}{
     -setup {
 	db allrows {
 	    create table blobtest (
-	        id integer primary key,
-                stuff nvarchar(max)
-            )
-        }
+		id integer primary key,
+		stuff nvarchar(max)
+	    )
+	}
 	set testblob [string repeat 0123456789abc 200]
-        db allrows {
-            insert into blobtest(id, stuff) values (1, :testblob)
-        }
+	db allrows {
+	    insert into blobtest(id, stuff) values (1, :testblob)
+	}
     }
     -body {
 	set trouble {}
 	db foreach row {select id, stuff from blobtest} {
-            if {[dict get $row stuff] ne $testblob} {
+	    if {[dict get $row stuff] ne $testblob} {
 		set trouble       "blob is   \"[dict get $row stuff]\""
-                append trouble \n "should be \"" $testblob "\""
+		append trouble \n "should be \"" $testblob "\""
 		append trouble \n "length is [string length \
-                                                  [dict get $row stuff]]"
+						  [dict get $row stuff]]"
 		append trouble \n "should be [string length $testblob]"
 	    }
 	}
@@ -3324,28 +3324,28 @@ catch {::db allrows {DROP TABLE a}}
 
 ::db allrows {
     CREATE TABLE a (
-        k1 INTEGER,
-        CONSTRAINT pk_a PRIMARY KEY(k1)
+	k1 INTEGER,
+	CONSTRAINT pk_a PRIMARY KEY(k1)
     )
 }
 
 ::db allrows {
     CREATE TABLE b (
-        k1 INTEGER,
-        k2 INTEGER,
-        CONSTRAINT pk_b PRIMARY KEY(k1, k2),
-        CONSTRAINT fk_b1 FOREIGN KEY (k1) REFERENCES a(k1),
-        CONSTRAINT fk_b2 FOREIGN KEY (k2) REFERENCES a(k1)
+	k1 INTEGER,
+	k2 INTEGER,
+	CONSTRAINT pk_b PRIMARY KEY(k1, k2),
+	CONSTRAINT fk_b1 FOREIGN KEY (k1) REFERENCES a(k1),
+	CONSTRAINT fk_b2 FOREIGN KEY (k2) REFERENCES a(k1)
     )
 }
 
 ::db allrows {
     CREATE TABLE c (
-        p1 INTEGER,
-        p2 INTEGER,
-        CONSTRAINT pk_c PRIMARY KEY(p1, p2),
-        CONSTRAINT fk_c1 FOREIGN KEY (p1) REFERENCES a(k1),
-        CONSTRAINT fk_c2 FOREIGN KEY (p2) REFERENCES a(k1),
+	p1 INTEGER,
+	p2 INTEGER,
+	CONSTRAINT pk_c PRIMARY KEY(p1, p2),
+	CONSTRAINT fk_c1 FOREIGN KEY (p1) REFERENCES a(k1),
+	CONSTRAINT fk_c2 FOREIGN KEY (p2) REFERENCES a(k1),
 	CONSTRAINT fk_cpair FOREIGN KEY (p2,p1) REFERENCES b(k1,k2)
     )
 }
@@ -3665,7 +3665,7 @@ test tdbc::odbc-30.3 {Multiple result sets - try to read past end} {*}{
 		    lappend rowsets $rows
 		    if {[$resultset nextresults] == 0} break
 		}
-	        lappend rowsets [catch {$resultset nextresults} msg] $msg
+		lappend rowsets [catch {$resultset nextresults} msg] $msg
 		set rowsets
 	    } results
 	    rename $resultset {}
@@ -3796,16 +3796,16 @@ test tdbc::odbc-31.1 {stored procedure - invoke with default config} {*}{
 	}
 	rename $stmt {}
 	db allrows {
-            IF EXISTS(SELECT name FROM sysobjects
-                      WHERE name = 'find_person' AND type = 'P')
-                DROP PROCEDURE find_person
+	    IF EXISTS(SELECT name FROM sysobjects
+		      WHERE name = 'find_person' AND type = 'P')
+		DROP PROCEDURE find_person
 	}
 	db allrows {
 	    CREATE PROCEDURE find_person
-	        @name VARCHAR(40),
-	        @idnum INTEGER OUTPUT
-            AS
-            SELECT @idnum = idnum FROM people WHERE name = @name
+		@name VARCHAR(40),
+		@idnum INTEGER OUTPUT
+	    AS
+	    SELECT @idnum = idnum FROM people WHERE name = @name
 	}
 	catch {unset stmt}
     }
@@ -3845,16 +3845,16 @@ test tdbc::odbc-31.2 {stored procedure - invoke with escapes} {*}{
 	}
 	rename $stmt {}
 	db allrows {
-            IF EXISTS(SELECT name FROM sysobjects
-                      WHERE name = 'find_person' AND type = 'P')
-                DROP PROCEDURE find_person
+	    IF EXISTS(SELECT name FROM sysobjects
+		      WHERE name = 'find_person' AND type = 'P')
+		DROP PROCEDURE find_person
 	}
 	db allrows -outputparams x {
 	    CREATE PROCEDURE find_person
-	        @name VARCHAR(40),
-	        @idnum INTEGER OUTPUT
-            AS
-            SELECT @idnum = idnum FROM people WHERE name = @name
+		@name VARCHAR(40),
+		@idnum INTEGER OUTPUT
+	    AS
+	    SELECT @idnum = idnum FROM people WHERE name = @name
 	}
 	catch {unset stmt}
     }
