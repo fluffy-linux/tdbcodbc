@@ -70,7 +70,7 @@ static Tcl_LoadHandle odbcInstLoadHandle = NULL;
 static SQLHENV hEnv = SQL_NULL_HENV;
 				/* Handle to the global ODBC environment */
 static size_t hEnvRefCount = 0;	/* Reference count on the global environment */
-static size_t sizeofSQLWCHAR = sizeof(SQLWCHAR);
+static Tcl_Size sizeofSQLWCHAR = sizeof(SQLWCHAR);
 				/* Preset, will be autodetected later */
 
 /*
@@ -2594,7 +2594,7 @@ StatementConstructor(
     Tcl_Obj** tokenv;		/* Exploded tokens from the list */
     Tcl_Obj* nativeSql;		/* SQL statement mapped to ODBC form */
     char* tokenStr;		/* Token string */
-    size_t tokenLen;		/* Length of a token */
+    Tcl_Size tokenLen;		/* Length of a token */
     RETCODE rc;			/* Return code from ODBC */
     SQLSMALLINT nParams;	/* Number of parameters in the ODBC statement */
     Tcl_Size i, j;
@@ -5057,7 +5057,7 @@ DriversObjCmd(
     int finished;		/* Flag == 1 if a complete list of drivers
 				 * has been constructed */
     int status = TCL_OK;	/* Status return from this call */
-    size_t i, j;
+    Tcl_Size i, j;
 
     /* Get the argument */
 
@@ -5406,9 +5406,9 @@ DatasourceObjCmdA(
 				/* Error message from ODBC operations */
     Tcl_DString errorMessageDS;	/* Error message in UTF-8 */
     char* p;
-    size_t driverNameLen;		/* Length of the driver name */
+    Tcl_Size driverNameLen;	/* Length of the driver name */
     Tcl_Obj* attrObj;		/* NULL-delimited attribute values */
-    size_t attrLen;		/* Length of the attribute values */
+    Tcl_Size attrLen;		/* Length of the attribute values */
     const char* sep;		/* Separator for attribute values */
     DWORD errorCode;		/* Error code */
     WORD errorMessageLen;	/* Length of the returned error message */
