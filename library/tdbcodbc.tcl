@@ -79,7 +79,7 @@ package require tdbc
     method tables {{pattern %}} {
 	set stmt [::tdbc::odbc::tablesStatement create \
 		      Stmt::[incr statementSeq] [self] $pattern]
-       	set status [catch {
+	set status [catch {
 	    set retval {}
 	    $stmt foreach -as dicts row {
 		if {[dict exists $row TABLE_NAME]} {
@@ -150,7 +150,7 @@ package require tdbc
     method primarykeys {tableName} {
 	set stmt [::tdbc::odbc::primarykeysStatement create \
 		      Stmt::[incr statementSeq] [self] $tableName]
-       	set status [catch {
+	set status [catch {
 	    set retval {}
 	    $stmt foreach -as dicts row {
 		foreach {odbcKey tdbcKey} {
@@ -180,7 +180,7 @@ package require tdbc
     method foreignkeys {args} {
 	set stmt [::tdbc::odbc::foreignkeysStatement create \
 		      Stmt::[incr statementSeq] [self] {*}$args]
-       	set status [catch {
+	set status [catch {
 	    set fkseq 0
 	    set retval {}
 	    $stmt foreach -as dicts row {
@@ -227,7 +227,7 @@ package require tdbc
     method evaldirect {sqlStatement} {
 	set stmt [::tdbc::odbc::evaldirectStatement create \
 		      Stmt::[incr statementSeq] [self] $sqlStatement]
-       	set status [catch {
+	set status [catch {
 	    $stmt allrows -as dicts
 	} result options]
 	catch {rename $stmt {}}

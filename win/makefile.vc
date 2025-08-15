@@ -75,7 +75,7 @@ TDBC_LIB_FILE	 = tdbc$(TDBC_VERSION)$(SUFX).dll
 TDBCSTUBLIBNAME	 = tdbcstub.lib
 TDBC_LIB_FILE	 = tcl9tdbc$(TDBC_VERSION).dll
 !endif
-TDBCSTUBLIB 	 = $(TDBC_DIR)\win\$(BUILDDIRTOP)\$(TDBCSTUBLIBNAME)
+TDBCSTUBLIB	 = $(TDBC_DIR)\win\$(BUILDDIRTOP)\$(TDBCSTUBLIBNAME)
 TDBC_BIN_DIR     = $(TDBC_DIR)/win/$(BUILDDIRTOP)
 
 PRJ_INCLUDES	= -I"$(TDBC_GENERIC_DIR)"
@@ -119,15 +119,15 @@ test-jet: setup $(PROJECT)
 	@echo testing tdbcodbc against Jet
 	@set TDBCODBC_TYPE=jet
 # the following is identical for all 3 tests
-        @set TCL_LIBRARY=$(TCL_LIBRARY:\=/)
-        @set TCLLIBPATH=$(OUT_DIR_PATH:\=/)
+	@set TCL_LIBRARY=$(TCL_LIBRARY:\=/)
+	@set TCLLIBPATH=$(OUT_DIR_PATH:\=/)
 	@set TDBC_LIBRARY=$(LIBDIR:\=/)
 	@$(CPY) $(LIBDIR)\*.tcl $(OUT_DIR)
 !if $(TCLINSTALL)
-        @set PATH=$(_TCLDIR)\bin;$(PATH)
+	@set PATH=$(_TCLDIR)\bin;$(PATH)
 	$(DEBUGGER) $(TCLSH) "$(ROOT:\=/)/tests/all.tcl" $(TESTFLAGS)
 !else
-        @set PATH=$(_TCLDIR)\win\$(BUILDDIRTOP);$(PATH)
+	@set PATH=$(_TCLDIR)\win\$(BUILDDIRTOP);$(PATH)
 	$(DEBUGGER) $(TCLSH) "$(ROOT:\=/)/tests/all.tcl" $(TESTFLAGS) \
 		-load "package ifneeded tdbc::odbc $(DOTVERSION) \
 			{source {$(LIBDIR:\=/)/tdbcodbc.tcl};load {$(PRJLIB:\=/)} [string totitle $(PROJECT)]};\
@@ -139,15 +139,15 @@ test-sqlserver: setup $(PROJECT)
 	@echo testing tdbcodbc against SQL Server
 	@set TDBCODBC_TYPE=sqlserver
 # the following is identical for all 3 tests
-        @set TCL_LIBRARY=$(TCL_LIBRARY:\=/)
-        @set TCLLIBPATH=$(OUT_DIR_PATH:\=/)
+	@set TCL_LIBRARY=$(TCL_LIBRARY:\=/)
+	@set TCLLIBPATH=$(OUT_DIR_PATH:\=/)
 	@set TDBC_LIBRARY=$(LIBDIR:\=/)
 	@$(CPY) $(LIBDIR)\*.tcl $(OUT_DIR)
 !if $(TCLINSTALL)
-        @set PATH=$(_TCLDIR)\bin;$(PATH)
+	@set PATH=$(_TCLDIR)\bin;$(PATH)
 	$(DEBUGGER) $(TCLSH) "$(ROOT:\=/)/tests/all.tcl" $(TESTFLAGS)
 !else
-        @set PATH=$(_TCLDIR)\win\$(BUILDDIRTOP);$(PATH)
+	@set PATH=$(_TCLDIR)\win\$(BUILDDIRTOP);$(PATH)
 	$(DEBUGGER) $(TCLSH) "$(ROOT:\=/)/tests/all.tcl" $(TESTFLAGS) \
 		-load "package ifneeded tdbc::odbc $(DOTVERSION) \
 			{source {$(LIBDIR:\=/)/tdbcodbc.tcl};load {$(PRJLIB:\=/)} [string totitle $(PROJECT)]};\
@@ -159,15 +159,15 @@ test-sqlite: setup $(PROJECT)
 	@echo testing tdbcodbc against SQLite
 	@set TDBCODBC_TYPE=sqlite
 # the following is identical for all 3 tests
-        @set TCL_LIBRARY=$(TCL_LIBRARY:\=/)
-        @set TCLLIBPATH=$(OUT_DIR_PATH:\=/)
+	@set TCL_LIBRARY=$(TCL_LIBRARY:\=/)
+	@set TCLLIBPATH=$(OUT_DIR_PATH:\=/)
 	@set TDBC_LIBRARY=$(LIBDIR:\=/)
 	@$(CPY) $(LIBDIR)\*.tcl $(OUT_DIR)
 !if $(TCLINSTALL)
-        @set PATH=$(_TCLDIR)\bin;$(PATH)
+	@set PATH=$(_TCLDIR)\bin;$(PATH)
 	$(DEBUGGER) $(TCLSH) "$(ROOT:\=/)/tests/all.tcl" $(TESTFLAGS)
 !else
-        @set PATH=$(_TCLDIR)\win\$(BUILDDIRTOP);$(PATH)
+	@set PATH=$(_TCLDIR)\win\$(BUILDDIRTOP);$(PATH)
 	$(DEBUGGER) $(TCLSH) "$(ROOT:\=/)/tests/all.tcl" $(TESTFLAGS) \
 		-load "package ifneeded tdbc::odbc $(DOTVERSION) \
 			{source {$(LIBDIR:\=/)/tdbcodbc.tcl};load {$(PRJLIB:\=/)} [string totitle $(PROJECT)]};\

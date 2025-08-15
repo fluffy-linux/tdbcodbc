@@ -3810,11 +3810,11 @@ test tdbc::odbc-31.1 {stored procedure - invoke with default config} {*}{
 	catch {unset stmt}
     }
     -body {
- 	set stmt [::db prepare {
- 	    DECLARE @x AS INTEGER;
- 	    EXECUTE find_person :name, @x OUTPUT;
+	set stmt [::db prepare {
+	    DECLARE @x AS INTEGER;
+	    EXECUTE find_person :name, @x OUTPUT;
 	    SELECT @x AS result
- 	}]
+	}]
 	$stmt allrows {name barney}
     }
     -cleanup {
@@ -3859,7 +3859,7 @@ test tdbc::odbc-31.2 {stored procedure - invoke with escapes} {*}{
 	catch {unset stmt}
     }
     -body {
- 	set stmt [::db prepare {{CALL find_person(:name, :x)}}]
+	set stmt [::db prepare {{CALL find_person(:name, :x)}}]
 	$stmt paramtype x out integer 10
 	puts [$stmt params]
 	$stmt allrows {name barney}
