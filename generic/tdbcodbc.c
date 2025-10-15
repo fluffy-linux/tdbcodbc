@@ -60,7 +60,15 @@
 # ifndef TCL_SIZE_MODIFIER
 #   define TCL_SIZE_MODIFIER ""
 #endif
-
+#if TCL_MAJOR_VERSION < 9
+  typedef Tcl_ObjCmdProc Tcl_ObjCmdProc2;
+# define Tcl_CreateObjCommand2 Tcl_CreateObjCommand
+# define Tcl_MethodType2 Tcl_MethodType
+# define Tcl_NewMethod2 Tcl_NewMethod
+# define TCL_OO_METHOD_VERSION_2 TCL_OO_METHOD_VERSION_CURRENT
+# undef Tcl_Size
+  typedef int Tcl_Size;
+#endif
 /* Static data contained in this file */
 
 TCL_DECLARE_MUTEX(hEnvMutex);	/* Mutex protecting the environment handle
@@ -424,27 +432,27 @@ static int ConfigureConnection(Tcl_Interp* interp,
 			       HWND* hParentWindowPtr);
 static int ConnectionConstructor(void *clientData, Tcl_Interp* interp,
 				 Tcl_ObjectContext context,
-				 int objc, Tcl_Obj *const objv[]);
+				 Tcl_Size objc, Tcl_Obj *const objv[]);
 static int ConnectionBeginTransactionMethod(void *clientData,
 					    Tcl_Interp* interp,
 					    Tcl_ObjectContext context,
-					    int objc, Tcl_Obj *const objv[]);
+					    Tcl_Size objc, Tcl_Obj *const objv[]);
 static int ConnectionConfigureMethod(void *clientData,
 				     Tcl_Interp* interp,
 				     Tcl_ObjectContext context,
-				     int objc, Tcl_Obj *const objv[]);
+				     Tcl_Size objc, Tcl_Obj *const objv[]);
 static int ConnectionEndXcnMethod(void *clientData,
 				  Tcl_Interp* interp,
 				  Tcl_ObjectContext context,
-				  int objc, Tcl_Obj *const objv[]);
+				  Tcl_Size objc, Tcl_Obj *const objv[]);
 static int ConnectionHasBigintMethod(void *clientData,
 				     Tcl_Interp* interp,
 				     Tcl_ObjectContext context,
-				     int objc, Tcl_Obj *const objv[]);
+				     Tcl_Size objc, Tcl_Obj *const objv[]);
 static int ConnectionHasWvarcharMethod(void *clientData,
 				       Tcl_Interp* interp,
 				       Tcl_ObjectContext context,
-				       int objc, Tcl_Obj *const objv[]);
+				       Tcl_Size objc, Tcl_Obj *const objv[]);
 static int SetAutocommitFlag(Tcl_Interp* interp, ConnectionData* cdata,
 			     SQLINTEGER flag);
 static void DeleteCmd(void *clientData);
@@ -458,59 +466,59 @@ static StatementData* NewStatement(ConnectionData* cdata,
 				   Tcl_Object connectionObject);
 static int StatementConstructor(void *clientData, Tcl_Interp* interp,
 				Tcl_ObjectContext context,
-				int objc, Tcl_Obj *const objv[]);
+				Tcl_Size objc, Tcl_Obj *const objv[]);
 static int StatementConnectionMethod(void *clientData, Tcl_Interp* interp,
 				     Tcl_ObjectContext context,
-				     int objc, Tcl_Obj *const objv[]);
+				     Tcl_Size objc, Tcl_Obj *const objv[]);
 static int StatementParamListMethod(void *clientData, Tcl_Interp* interp,
 				    Tcl_ObjectContext context,
-				    int objc, Tcl_Obj *const objv[]);
+				    Tcl_Size objc, Tcl_Obj *const objv[]);
 static int StatementParamtypeMethod(void *clientData, Tcl_Interp* interp,
 				    Tcl_ObjectContext context,
-				    int objc, Tcl_Obj *const objv[]);
+				    Tcl_Size objc, Tcl_Obj *const objv[]);
 static int TablesStatementConstructor(void *clientData, Tcl_Interp* interp,
 				      Tcl_ObjectContext context,
-				      int objc, Tcl_Obj *const objv[]);
+				      Tcl_Size objc, Tcl_Obj *const objv[]);
 static int ColumnsStatementConstructor(void *clientData,
 				       Tcl_Interp* interp,
 				       Tcl_ObjectContext context,
-				       int objc, Tcl_Obj *const objv[]);
+				       Tcl_Size objc, Tcl_Obj *const objv[]);
 static int PrimarykeysStatementConstructor(void *clientData,
 					   Tcl_Interp* interp,
 					   Tcl_ObjectContext context,
-					   int objc, Tcl_Obj *const objv[]);
+					   Tcl_Size objc, Tcl_Obj *const objv[]);
 static int ForeignkeysStatementConstructor(void *clientData,
 					   Tcl_Interp* interp,
 					   Tcl_ObjectContext context,
-					   int objc, Tcl_Obj *const objv[]);
+					   Tcl_Size objc, Tcl_Obj *const objv[]);
 static int EvaldirectStatementConstructor(void *clientData,
 					   Tcl_Interp* interp,
 					   Tcl_ObjectContext context,
-					   int objc, Tcl_Obj *const objv[]);
+					   Tcl_Size objc, Tcl_Obj *const objv[]);
 static int TypesStatementConstructor(void *clientData, Tcl_Interp* interp,
 				     Tcl_ObjectContext context,
-				     int objc, Tcl_Obj *const objv[]);
+				     Tcl_Size objc, Tcl_Obj *const objv[]);
 static void DeleteStatementMetadata(void *clientData);
 static void DeleteStatement(StatementData* sdata);
 static int CloneStatement(Tcl_Interp* interp, void *oldClientData,
 			  void **newClientData);
 static int ResultSetConstructor(void *clientData, Tcl_Interp* interp,
 				Tcl_ObjectContext context,
-				int objc, Tcl_Obj *const objv[]);
+				Tcl_Size objc, Tcl_Obj *const objv[]);
 static int ResultSetColumnsMethod(void *clientData, Tcl_Interp* interp,
 				  Tcl_ObjectContext context,
-				  int objc, Tcl_Obj *const objv[]);
+				  Tcl_Size objc, Tcl_Obj *const objv[]);
 static int ResultSetNextrowMethod(void *clientData, Tcl_Interp* interp,
 				  Tcl_ObjectContext context,
-				  int objc, Tcl_Obj *const objv[]);
+				  Tcl_Size objc, Tcl_Obj *const objv[]);
 static int ResultSetNextresultsMethod(void *clientData, Tcl_Interp* interp,
 				      Tcl_ObjectContext context,
-				      int objc, Tcl_Obj *const objv[]);
+				      Tcl_Size objc, Tcl_Obj *const objv[]);
 static int GetCell(ResultSetData* rdata, Tcl_Interp* interp,
 		   int columnIndex, Tcl_Obj** retval);
 static int ResultSetRowcountMethod(void *clientData, Tcl_Interp* interp,
 				   Tcl_ObjectContext context,
-				   int objc, Tcl_Obj *const objv[]);
+				   Tcl_Size objc, Tcl_Obj *const objv[]);
 static void DeleteResultSetMetadata(void *clientData);
 static void DeleteResultSet(ResultSetData* rdata);
 static void DeleteResultSetDescription(ResultSetData* rdata);
@@ -519,9 +527,9 @@ static int CloneResultSet(Tcl_Interp* interp, void *oldClientData,
 static void FreeBoundParameters(ResultSetData* rdata);
 static void DeletePerInterpData(PerInterpData* pidata);
 static int DatasourcesObjCmd(void *clientData, Tcl_Interp* interp,
-			      int objc, Tcl_Obj *const objv[]);
+			      Tcl_Size objc, Tcl_Obj *const objv[]);
 static int DriversObjCmd(void *clientData, Tcl_Interp* interp,
-			 int objc, Tcl_Obj *const objv[]);
+			 Tcl_Size objc, Tcl_Obj *const objv[]);
 
 /* Metadata type that holds connection data */
 
@@ -558,16 +566,16 @@ static const Tcl_ObjectMetadataType resultSetDataType = {
 
 /* Method types of the connection methods that are implemented in C */
 
-static const Tcl_MethodType ConnectionConstructorType = {
-    TCL_OO_METHOD_VERSION_CURRENT,
+static const Tcl_MethodType2 ConnectionConstructorType = {
+    TCL_OO_METHOD_VERSION_2,
 				/* version */
     "CONSTRUCTOR",		/* name */
     ConnectionConstructor,	/* callProc */
     DeleteCmd,			/* deleteProc */
     CloneCmd			/* cloneProc */
 };
-static const Tcl_MethodType ConnectionBeginTransactionMethodType = {
-    TCL_OO_METHOD_VERSION_CURRENT,
+static const Tcl_MethodType2 ConnectionBeginTransactionMethodType = {
+    TCL_OO_METHOD_VERSION_2,
 				/* version */
     "begintransaction",		/* name */
     ConnectionBeginTransactionMethod,
@@ -575,24 +583,24 @@ static const Tcl_MethodType ConnectionBeginTransactionMethodType = {
     NULL,			/* deleteProc */
     CloneCmd			/* cloneProc */
 };
-static const Tcl_MethodType ConnectionConfigureMethodType = {
-    TCL_OO_METHOD_VERSION_CURRENT,
+static const Tcl_MethodType2 ConnectionConfigureMethodType = {
+    TCL_OO_METHOD_VERSION_2,
 				/* version */
     "configure",		/* name */
     ConnectionConfigureMethod,	/* callProc */
     NULL,			/* deleteProc */
     CloneCmd			/* cloneProc */
 };
-static const Tcl_MethodType ConnectionEndXcnMethodType = {
-    TCL_OO_METHOD_VERSION_CURRENT,
+static const Tcl_MethodType2 ConnectionEndXcnMethodType = {
+    TCL_OO_METHOD_VERSION_2,
 				/* version */
     "endtransaction",		/* name */
     ConnectionEndXcnMethod,	/* callProc */
     NULL,			/* deleteProc */
     CloneCmd			/* cloneProc */
 };
-static const Tcl_MethodType ConnectionHasBigintMethodType = {
-    TCL_OO_METHOD_VERSION_CURRENT,
+static const Tcl_MethodType2 ConnectionHasBigintMethodType = {
+    TCL_OO_METHOD_VERSION_2,
 				/* version */
     "HasBigint",		/* name */
     ConnectionHasBigintMethod,
@@ -600,8 +608,8 @@ static const Tcl_MethodType ConnectionHasBigintMethodType = {
     NULL,			/* deleteProc */
     CloneCmd			/* cloneProc */
 };
-static const Tcl_MethodType ConnectionHasWvarcharMethodType = {
-    TCL_OO_METHOD_VERSION_CURRENT,
+static const Tcl_MethodType2 ConnectionHasWvarcharMethodType = {
+    TCL_OO_METHOD_VERSION_2,
 				/* version */
     "HasWvarchar",		/* name */
     ConnectionHasWvarcharMethod,
@@ -615,7 +623,7 @@ static const Tcl_MethodType ConnectionHasWvarcharMethodType = {
  * 'rollback' are all special because they have non-NULL clientData.
  */
 
-static const Tcl_MethodType* const ConnectionMethods[] = {
+static const Tcl_MethodType2* const ConnectionMethods[] = {
     &ConnectionBeginTransactionMethodType,
     &ConnectionConfigureMethodType,
     &ConnectionHasBigintMethodType,
@@ -625,32 +633,32 @@ static const Tcl_MethodType* const ConnectionMethods[] = {
 
 /* Method types of the statement methods that are implemented in C */
 
-static const Tcl_MethodType StatementConstructorType = {
-    TCL_OO_METHOD_VERSION_CURRENT,
+static const Tcl_MethodType2 StatementConstructorType = {
+    TCL_OO_METHOD_VERSION_2,
 				/* version */
     "CONSTRUCTOR",		/* name */
     StatementConstructor,	/* callProc */
     NULL,			/* deleteProc */
     NULL			/* cloneProc */
 };
-static const Tcl_MethodType StatementConnectionMethodType = {
-    TCL_OO_METHOD_VERSION_CURRENT,
+static const Tcl_MethodType2 StatementConnectionMethodType = {
+    TCL_OO_METHOD_VERSION_2,
 				/* version */
     "connection",		/* name */
     StatementConnectionMethod,	/* callProc */
     NULL,			/* deleteProc */
     NULL			/* cloneProc */
 };
-static const Tcl_MethodType StatementParamListMethodType = {
-    TCL_OO_METHOD_VERSION_CURRENT,
+static const Tcl_MethodType2 StatementParamListMethodType = {
+    TCL_OO_METHOD_VERSION_2,
 				/* version */
     "ParamList",		/* name */
     StatementParamListMethod,	/* callProc */
     NULL,			/* deleteProc */
     NULL			/* cloneProc */
 };
-static const Tcl_MethodType StatementParamtypeMethodType = {
-    TCL_OO_METHOD_VERSION_CURRENT,
+static const Tcl_MethodType2 StatementParamtypeMethodType = {
+    TCL_OO_METHOD_VERSION_2,
 				/* version */
     "paramtype",		/* name */
     StatementParamtypeMethod,	/* callProc */
@@ -662,7 +670,7 @@ static const Tcl_MethodType StatementParamtypeMethodType = {
  * Methods to create on the statement class.
  */
 
-static const Tcl_MethodType* const StatementMethods[] = {
+static const Tcl_MethodType2* const StatementMethods[] = {
     &StatementConnectionMethodType,
     &StatementParamListMethodType,
     &StatementParamtypeMethodType,
@@ -674,8 +682,8 @@ static const Tcl_MethodType* const StatementMethods[] = {
  * used to query the names and attributes of database tables.
  */
 
-static const Tcl_MethodType TablesStatementConstructorType = {
-    TCL_OO_METHOD_VERSION_CURRENT,
+static const Tcl_MethodType2 TablesStatementConstructorType = {
+    TCL_OO_METHOD_VERSION_2,
 				/* version */
     "CONSTRUCTOR",		/* name */
     TablesStatementConstructor,	/* callProc */
@@ -688,8 +696,8 @@ static const Tcl_MethodType TablesStatementConstructorType = {
  * used to query the names and attributes of database columns.
  */
 
-static const Tcl_MethodType ColumnsStatementConstructorType = {
-    TCL_OO_METHOD_VERSION_CURRENT,
+static const Tcl_MethodType2 ColumnsStatementConstructorType = {
+    TCL_OO_METHOD_VERSION_2,
 				/* version */
     "CONSTRUCTOR",		/* name */
     ColumnsStatementConstructor,
@@ -703,8 +711,8 @@ static const Tcl_MethodType ColumnsStatementConstructorType = {
  * used to query the names and attributes of primary keys.
  */
 
-static const Tcl_MethodType PrimarykeysStatementConstructorType = {
-    TCL_OO_METHOD_VERSION_CURRENT,
+static const Tcl_MethodType2 PrimarykeysStatementConstructorType = {
+    TCL_OO_METHOD_VERSION_2,
 				/* version */
     "CONSTRUCTOR",		/* name */
     PrimarykeysStatementConstructor,
@@ -718,8 +726,8 @@ static const Tcl_MethodType PrimarykeysStatementConstructorType = {
  * used to query the names and attributes of foreign keys.
  */
 
-static const Tcl_MethodType ForeignkeysStatementConstructorType = {
-    TCL_OO_METHOD_VERSION_CURRENT,
+static const Tcl_MethodType2 ForeignkeysStatementConstructorType = {
+    TCL_OO_METHOD_VERSION_2,
 				/* version */
     "CONSTRUCTOR",		/* name */
     ForeignkeysStatementConstructor,
@@ -734,8 +742,8 @@ static const Tcl_MethodType ForeignkeysStatementConstructorType = {
  * variable substitutions.
  */
 
-static const Tcl_MethodType EvaldirectStatementConstructorType = {
-    TCL_OO_METHOD_VERSION_CURRENT,
+static const Tcl_MethodType2 EvaldirectStatementConstructorType = {
+    TCL_OO_METHOD_VERSION_2,
 				/* version */
     "CONSTRUCTOR",		/* name */
     EvaldirectStatementConstructor,
@@ -749,8 +757,8 @@ static const Tcl_MethodType EvaldirectStatementConstructorType = {
  * used to query the names and attributes of database types.
  */
 
-static const Tcl_MethodType TypesStatementConstructorType = {
-    TCL_OO_METHOD_VERSION_CURRENT,
+static const Tcl_MethodType2 TypesStatementConstructorType = {
+    TCL_OO_METHOD_VERSION_2,
 				/* version */
     "CONSTRUCTOR",		/* name */
     &TypesStatementConstructor,	/* callProc */
@@ -760,39 +768,39 @@ static const Tcl_MethodType TypesStatementConstructorType = {
 
 /* Method types of the result set methods that are implemented in C */
 
-static const Tcl_MethodType ResultSetConstructorType = {
-    TCL_OO_METHOD_VERSION_CURRENT,
+static const Tcl_MethodType2 ResultSetConstructorType = {
+    TCL_OO_METHOD_VERSION_2,
 				/* version */
     "CONSTRUCTOR",		/* name */
     ResultSetConstructor,	/* callProc */
     NULL,			/* deleteProc */
     NULL			/* cloneProc */
 };
-static const Tcl_MethodType ResultSetColumnsMethodType = {
-    TCL_OO_METHOD_VERSION_CURRENT,
+static const Tcl_MethodType2 ResultSetColumnsMethodType = {
+    TCL_OO_METHOD_VERSION_2,
 				/* version */    "columns",			/* name */
     ResultSetColumnsMethod,	/* callProc */
     NULL,			/* deleteProc */
     NULL			/* cloneProc */
 };
-static const Tcl_MethodType ResultSetNextresultsMethodType = {
-    TCL_OO_METHOD_VERSION_CURRENT,
+static const Tcl_MethodType2 ResultSetNextresultsMethodType = {
+    TCL_OO_METHOD_VERSION_2,
 				/* version */
     "nextresults",		/* name */
     ResultSetNextresultsMethod,	/* callProc */
     NULL,			/* deleteProc */
     NULL			/* cloneProc */
 };
-static const Tcl_MethodType ResultSetNextrowMethodType = {
-    TCL_OO_METHOD_VERSION_CURRENT,
+static const Tcl_MethodType2 ResultSetNextrowMethodType = {
+    TCL_OO_METHOD_VERSION_2,
 				/* version */
     "nextrow",			/* name */
     ResultSetNextrowMethod,	/* callProc */
     NULL,			/* deleteProc */
     NULL			/* cloneProc */
 };
-static const Tcl_MethodType ResultSetRowcountMethodType = {
-    TCL_OO_METHOD_VERSION_CURRENT,
+static const Tcl_MethodType2 ResultSetRowcountMethodType = {
+    TCL_OO_METHOD_VERSION_2,
 				/* version */
     "rowcount",			/* name */
     ResultSetRowcountMethod,	/* callProc */
@@ -801,7 +809,7 @@ static const Tcl_MethodType ResultSetRowcountMethodType = {
 };
 
 
-static const Tcl_MethodType* const ResultSetMethods[] = {
+static const Tcl_MethodType2* const ResultSetMethods[] = {
     &ResultSetColumnsMethodType,
     &ResultSetNextresultsMethodType,
     &ResultSetRowcountMethodType,
@@ -1966,7 +1974,7 @@ ConnectionConstructor(
     void *clientData,	/* Environment handle */
     Tcl_Interp* interp,		/* Tcl interpreter */
     Tcl_ObjectContext objectContext, /* Object context */
-    int objc,			/* Parameter count */
+    Tcl_Size objc,			/* Parameter count */
     Tcl_Obj *const objv[]	/* Parameter vector */
 ) {
     PerInterpData* pidata = (PerInterpData*) clientData;
@@ -2093,7 +2101,7 @@ ConnectionBeginTransactionMethod(
     TCL_UNUSED(void *),		/* Unused */
     Tcl_Interp* interp,		/* Tcl interpreter */
     Tcl_ObjectContext objectContext, /* Object context */
-    int objc,			/* Parameter count */
+    Tcl_Size objc,			/* Parameter count */
     Tcl_Obj *const objv[]	/* Parameter vector */
 ) {
     Tcl_Object thisObject = Tcl_ObjectContextObject(objectContext);
@@ -2160,7 +2168,7 @@ ConnectionConfigureMethod(
     TCL_UNUSED(void *),	/* Not used */
     Tcl_Interp* interp,		/* Tcl interpreter */
     Tcl_ObjectContext objectContext, /* Object context */
-    int objc,			/* Parameter count */
+    Tcl_Size objc,			/* Parameter count */
     Tcl_Obj *const objv[]	/* Parameter vector */
 ) {
     Tcl_Object thisObject = Tcl_ObjectContextObject(objectContext);
@@ -2208,7 +2216,7 @@ ConnectionEndXcnMethod(
     void *clientData,	/* Completion type */
     Tcl_Interp* interp,		/* Tcl interpreter */
     Tcl_ObjectContext objectContext, /* Object context */
-    int objc,			/* Parameter count */
+    Tcl_Size objc,			/* Parameter count */
     Tcl_Obj *const objv[]	/* Parameter vector */
 ) {
     SQLSMALLINT completionType = (SQLSMALLINT) PTR2INT(clientData);
@@ -2274,7 +2282,7 @@ ConnectionHasBigintMethod(
     TCL_UNUSED(void *),		/* Not used */
     Tcl_Interp* interp,		/* Tcl interpreter */
     Tcl_ObjectContext objectContext, /* Object context */
-    int objc,			/* Parameter count */
+    Tcl_Size objc,			/* Parameter count */
     Tcl_Obj *const objv[]	/* Parameter vector */
 ) {
     Tcl_Object thisObject = Tcl_ObjectContextObject(objectContext);
@@ -2332,7 +2340,7 @@ ConnectionHasWvarcharMethod(
     TCL_UNUSED(void *),		/* Not used */
     Tcl_Interp* interp,		/* Tcl interpreter */
     Tcl_ObjectContext objectContext, /* Object context */
-    int objc,			/* Parameter count */
+    Tcl_Size objc,			/* Parameter count */
     Tcl_Obj *const objv[]	/* Parameter vector */
 ) {
     Tcl_Object thisObject = Tcl_ObjectContextObject(objectContext);
@@ -2581,7 +2589,7 @@ StatementConstructor(
     TCL_UNUSED(void *),		/* Not used */
     Tcl_Interp* interp,		/* Tcl interpreter */
     Tcl_ObjectContext context,	/* Object context  */
-    int objc,			/* Parameter count */
+    Tcl_Size objc,			/* Parameter count */
     Tcl_Obj *const objv[]	/* Parameter vector */
 ) {
     Tcl_Object thisObject = Tcl_ObjectContextObject(context);
@@ -2785,7 +2793,7 @@ StatementConnectionMethod(
     TCL_UNUSED(void *),		/* Not used */
     Tcl_Interp* interp,		/* Tcl interpreter */
     Tcl_ObjectContext context,	/* Object context  */
-    TCL_UNUSED(int),			/* Parameter count */
+    TCL_UNUSED(Tcl_Size),			/* Parameter count */
     TCL_UNUSED(Tcl_Obj *const *)/* Parameter vector */
 ) {
     Tcl_Object thisObject = Tcl_ObjectContextObject(context);
@@ -2829,7 +2837,7 @@ StatementParamListMethod(
     TCL_UNUSED(void *),		/* Not used */
     Tcl_Interp* interp,		/* Tcl interpreter */
     Tcl_ObjectContext context,	/* Object context  */
-    TCL_UNUSED(int),			/* Parameter count */
+    TCL_UNUSED(Tcl_Size),			/* Parameter count */
     TCL_UNUSED(Tcl_Obj *const *)	/* Parameter vector */
 ) {
     Tcl_Object thisObject = Tcl_ObjectContextObject(context);
@@ -2885,7 +2893,7 @@ StatementParamtypeMethod(
     TCL_UNUSED(void *),		/* Not used */
     Tcl_Interp* interp,		/* Tcl interpreter */
     Tcl_ObjectContext context,	/* Object context  */
-    int objc,			/* Parameter count */
+    Tcl_Size objc,			/* Parameter count */
     Tcl_Obj *const objv[]	/* Parameter vector */
 ) {
     Tcl_Object thisObject = Tcl_ObjectContextObject(context);
@@ -2899,7 +2907,7 @@ StatementParamtypeMethod(
     const char* targetName;	/* Name of a candidate parameter in the
 				 * statement */
     Tcl_Obj* errorObj;		/* Error message */
-    int i;
+    Tcl_Size i;
     SQLSMALLINT dir = PARAM_IN | PARAM_KNOWN;
 				/* Direction of parameter transmssion */
     SQLSMALLINT odbcType = SQL_VARCHAR;
@@ -3014,7 +3022,7 @@ TablesStatementConstructor(
     TCL_UNUSED(void *),		/* Not used */
     Tcl_Interp* interp,		/* Tcl interpreter */
     Tcl_ObjectContext context,	/* Object context  */
-    int objc,			/* Parameter count */
+    Tcl_Size objc,			/* Parameter count */
     Tcl_Obj *const objv[]	/* Parameter vector */
 ) {
 
@@ -3114,7 +3122,7 @@ ColumnsStatementConstructor(
     TCL_UNUSED(void *),		/* Not used */
     Tcl_Interp* interp,		/* Tcl interpreter */
     Tcl_ObjectContext context,	/* Object context  */
-    int objc,			/* Parameter count */
+    Tcl_Size objc,			/* Parameter count */
     Tcl_Obj *const objv[]	/* Parameter vector */
 ) {
 
@@ -3217,7 +3225,7 @@ PrimarykeysStatementConstructor(
     TCL_UNUSED(void *),		/* Not used */
     Tcl_Interp* interp,		/* Tcl interpreter */
     Tcl_ObjectContext context,	/* Object context  */
-    int objc,			/* Parameter count */
+    Tcl_Size objc,			/* Parameter count */
     Tcl_Obj *const objv[]	/* Parameter vector */
 ) {
 
@@ -3319,7 +3327,7 @@ ForeignkeysStatementConstructor(
     TCL_UNUSED(void *),		/* Not used */
     Tcl_Interp* interp,		/* Tcl interpreter */
     Tcl_ObjectContext context,	/* Object context  */
-    int objc,			/* Parameter count */
+    Tcl_Size objc,			/* Parameter count */
     Tcl_Obj *const objv[]	/* Parameter vector */
 ) {
 
@@ -3461,7 +3469,7 @@ EvaldirectStatementConstructor(
     TCL_UNUSED(void *),
     Tcl_Interp* interp,		/* Tcl interpreter */
     Tcl_ObjectContext context,	/* Object context  */
-    int objc,			/* Parameter count */
+    Tcl_Size objc,			/* Parameter count */
     Tcl_Obj *const objv[]	/* Parameter vector */
 ) {
 
@@ -3569,7 +3577,7 @@ TypesStatementConstructor(
     TCL_UNUSED(void *),		/* Not used */
     Tcl_Interp* interp,		/* Tcl interpreter */
     Tcl_ObjectContext context,	/* Object context  */
-    int objc,			/* Parameter count */
+    Tcl_Size objc,			/* Parameter count */
     Tcl_Obj *const objv[]	/* Parameter vector */
 ) {
 
@@ -3745,7 +3753,7 @@ ResultSetConstructor(
     TCL_UNUSED(void *),		/* Not used */
     Tcl_Interp* interp,		/* Tcl interpreter */
     Tcl_ObjectContext context,	/* Object context  */
-    int objc,			/* Parameter count */
+    Tcl_Size objc,			/* Parameter count */
     Tcl_Obj *const objv[]	/* Parameter vector */
 ) {
 
@@ -4193,7 +4201,7 @@ ResultSetColumnsMethod(
     TCL_UNUSED(void *),		/* Not used */
     Tcl_Interp* interp,		/* Tcl interpreter */
     Tcl_ObjectContext context,	/* Object context  */
-    int objc,			/* Parameter count */
+    Tcl_Size objc,			/* Parameter count */
     Tcl_Obj *const objv[]	/* Parameter vector */
 ) {
     Tcl_Object thisObject = Tcl_ObjectContextObject(context);
@@ -4246,7 +4254,7 @@ ResultSetNextresultsMethod(
     TCL_UNUSED(void *),		/* Not used */
     Tcl_Interp* interp,		/* Tcl interpreter */
     Tcl_ObjectContext context,	/* Object context  */
-    TCL_UNUSED(int),			/* Parameter count */
+    TCL_UNUSED(Tcl_Size),			/* Parameter count */
     TCL_UNUSED(Tcl_Obj *const *)	/* Parameter vector */
 ) {
     Tcl_Object thisObject = Tcl_ObjectContextObject(context);
@@ -4334,7 +4342,7 @@ ResultSetNextrowMethod(
 				 * dicts are to be returned */
     Tcl_Interp* interp,		/* Tcl interpreter */
     Tcl_ObjectContext context,	/* Object context  */
-    int objc,			/* Parameter count */
+    Tcl_Size objc,			/* Parameter count */
     Tcl_Obj *const objv[]	/* Parameter vector */
 ) {
 
@@ -4738,7 +4746,7 @@ ResultSetRowcountMethod(
     TCL_UNUSED(void *),		/* Not used */
     Tcl_Interp* interp,		/* Tcl interpreter */
     Tcl_ObjectContext context,	/* Object context  */
-    int objc,			/* Parameter count */
+    Tcl_Size objc,			/* Parameter count */
     Tcl_Obj *const objv[]	/* Parameter vector */
 ) {
     Tcl_Object thisObject = Tcl_ObjectContextObject(context);
@@ -4891,7 +4899,7 @@ static int
 DatasourcesObjCmd(
     void *clientData,	/* Opaque pointer to per-interp data */
     Tcl_Interp* interp,		/* Tcl interpreter */
-    int objc,			/* Parameter count */
+    Tcl_Size objc,			/* Parameter count */
     Tcl_Obj *const objv[]	/* Parameter vector */
 ) {
     PerInterpData* pidata = (PerInterpData*) clientData;
@@ -5037,7 +5045,7 @@ static int
 DriversObjCmd(
     void *clientData,	/* Opaque pointer to per-interp data */
     Tcl_Interp* interp,		/* Tcl interpreter */
-    int objc,			/* Parameter count */
+    Tcl_Size objc,			/* Parameter count */
     Tcl_Obj *const objv[]	/* Parameter vector */
 ) {
     PerInterpData* pidata = (PerInterpData*) clientData;
@@ -5203,7 +5211,7 @@ static int
 DatasourceObjCmdW(
     TCL_UNUSED(void *),	/* Unused */
     Tcl_Interp* interp,		/* Tcl interpreter */
-    int objc,			/* Parameter count */
+    Tcl_Size objc,			/* Parameter count */
     Tcl_Obj *const objv[]	/* Parameter vector */
 ) {
     static const struct flag {
@@ -5381,7 +5389,7 @@ static int
 DatasourceObjCmdA(
     TCL_UNUSED(void *),		/* Unused */
     Tcl_Interp* interp,		/* Tcl interpreter */
-    int objc,			/* Parameter count */
+    Tcl_Size objc,			/* Parameter count */
     Tcl_Obj *const objv[]	/* Parameter vector */
 ) {
     static const struct flag {
@@ -5563,6 +5571,62 @@ DatasourceObjCmdA(
 #  define STRINGIFY1(x) #x
 #endif
 
+static const char version[] = PACKAGE_VERSION "+" STRINGIFY(TDBC_ODBC_VERSION_UUID)
+#if defined(__clang__) && defined(__clang_major__)
+    ".clang-" STRINGIFY(__clang_major__)
+#if __clang_minor__ < 10
+			    "0"
+#endif
+    STRINGIFY(__clang_minor__)
+#endif
+#if defined(__cplusplus) && !defined(__OBJC__)
+    ".cplusplus"
+#endif
+#ifndef NDEBUG
+    ".debug"
+#endif
+#if !defined(__clang__) && !defined(__INTEL_COMPILER) && defined(__GNUC__)
+    ".gcc-" STRINGIFY(__GNUC__)
+#if __GNUC_MINOR__ < 10
+    "0"
+#endif
+    STRINGIFY(__GNUC_MINOR__)
+#endif
+#ifdef __INTEL_COMPILER
+    ".icc-" STRINGIFY(__INTEL_COMPILER)
+#endif
+#ifdef TCL_MEM_DEBUG
+    ".memdebug"
+#endif
+#if defined(_MSC_VER)
+    ".msvc-" STRINGIFY(_MSC_VER)
+#endif
+#ifdef USE_NMAKE
+    ".nmake"
+#endif
+#ifndef TCL_CFG_OPTIMIZED
+    ".no-optimize"
+#endif
+#ifdef __OBJC__
+    ".objective-c"
+#if defined(__cplusplus)
+    "plusplus"
+#endif
+#endif
+#ifdef TCL_CFG_PROFILED
+    ".profile"
+#endif
+#ifdef PURIFY
+    ".purify"
+#endif
+#ifdef STATIC_BUILD
+    ".static"
+#endif
+#if TCL_UTF_MAX <= (3 + (TCL_MAJOR_VERSION == 8 && TCL_MINOR_VERSION == 6))
+    ".utf-16"
+#endif
+;
+
 #ifdef __cplusplus
 extern "C" {
 #endif  /* __cplusplus */
@@ -5591,63 +5655,14 @@ Tdbcodbc_Init(
     }
 
     if (Tcl_GetCommandInfo(interp, "::tcl::build-info", &info)) {
+#if TCL_MAJOR_VERSION > 8
+	if (info.isNativeObjectProc == 2) {
+	    Tcl_CreateObjCommand2(interp, "::tdbc::odbc::build-info",
+		    info.objProc2, (void *)version, NULL);
+	} else
+#endif
 	Tcl_CreateObjCommand(interp, "::tdbc::odbc::build-info",
-		info.objProc, (void *)(
-		    PACKAGE_VERSION "+" STRINGIFY(TDBC_ODBC_VERSION_UUID)
-#if defined(__clang__) && defined(__clang_major__)
-			    ".clang-" STRINGIFY(__clang_major__)
-#if __clang_minor__ < 10
-			    "0"
-#endif
-			    STRINGIFY(__clang_minor__)
-#endif
-#if defined(__cplusplus) && !defined(__OBJC__)
-			    ".cplusplus"
-#endif
-#ifndef NDEBUG
-			    ".debug"
-#endif
-#if !defined(__clang__) && !defined(__INTEL_COMPILER) && defined(__GNUC__)
-			    ".gcc-" STRINGIFY(__GNUC__)
-#if __GNUC_MINOR__ < 10
-			    "0"
-#endif
-			    STRINGIFY(__GNUC_MINOR__)
-#endif
-#ifdef __INTEL_COMPILER
-			    ".icc-" STRINGIFY(__INTEL_COMPILER)
-#endif
-#ifdef TCL_MEM_DEBUG
-			    ".memdebug"
-#endif
-#if defined(_MSC_VER)
-			    ".msvc-" STRINGIFY(_MSC_VER)
-#endif
-#ifdef USE_NMAKE
-			    ".nmake"
-#endif
-#ifndef TCL_CFG_OPTIMIZED
-			    ".no-optimize"
-#endif
-#ifdef __OBJC__
-			    ".objective-c"
-#if defined(__cplusplus)
-			    "plusplus"
-#endif
-#endif
-#ifdef TCL_CFG_PROFILED
-			    ".profile"
-#endif
-#ifdef PURIFY
-			    ".purify"
-#endif
-#ifdef STATIC_BUILD
-			    ".static"
-#endif
-#if TCL_UTF_MAX <= (3 + (TCL_MAJOR_VERSION == 8 && TCL_MINOR_VERSION == 6))
-			    ".utf-16"
-#endif
-		), NULL);
+		info.objProc, (void *)version, NULL);
     }
 
     /* Provide the current package */
@@ -5690,7 +5705,7 @@ Tdbcodbc_Init(
     curClass = Tcl_GetObjectAsClass(curClassObject);
     IncrPerInterpRefCount(pidata);
     Tcl_ClassSetConstructor(interp, curClass,
-			    Tcl_NewMethod(interp, curClass, NULL, 0,
+			    Tcl_NewMethod2(interp, curClass, NULL, 0,
 					  &ConnectionConstructorType,
 					  (void *) pidata));
 
@@ -5698,18 +5713,18 @@ Tdbcodbc_Init(
 
     nameObj = Tcl_NewStringObj("commit", -1);
     Tcl_IncrRefCount(nameObj);
-    Tcl_NewMethod(interp, curClass, nameObj, 1,
+    Tcl_NewMethod2(interp, curClass, nameObj, 1,
 		       &ConnectionEndXcnMethodType, (void *) SQL_COMMIT);
     Tcl_DecrRefCount(nameObj);
     nameObj = Tcl_NewStringObj("rollback", -1);
     Tcl_IncrRefCount(nameObj);
-    Tcl_NewMethod(interp, curClass, nameObj, 1,
+    Tcl_NewMethod2(interp, curClass, nameObj, 1,
 		       &ConnectionEndXcnMethodType, (void *) SQL_ROLLBACK);
     Tcl_DecrRefCount(nameObj);
     for (i = 0; ConnectionMethods[i] != NULL; ++i) {
 	nameObj = Tcl_NewStringObj(ConnectionMethods[i]->name, -1);
 	Tcl_IncrRefCount(nameObj);
-	Tcl_NewMethod(interp, curClass, nameObj, 1, ConnectionMethods[i],
+	Tcl_NewMethod2(interp, curClass, nameObj, 1, ConnectionMethods[i],
 			   NULL);
 	Tcl_DecrRefCount(nameObj);
     }
@@ -5728,7 +5743,7 @@ Tdbcodbc_Init(
     /* Attach the constructor to the 'statement' class */
 
     Tcl_ClassSetConstructor(interp, curClass,
-			    Tcl_NewMethod(interp, curClass, NULL, 1,
+			    Tcl_NewMethod2(interp, curClass, NULL, 1,
 					  &StatementConstructorType,
 					  NULL));
 
@@ -5737,7 +5752,7 @@ Tdbcodbc_Init(
     for (i = 0; StatementMethods[i] != NULL; ++i) {
 	nameObj = Tcl_NewStringObj(StatementMethods[i]->name, -1);
 	Tcl_IncrRefCount(nameObj);
-	Tcl_NewMethod(interp, curClass, nameObj, 1, StatementMethods[i],
+	Tcl_NewMethod2(interp, curClass, nameObj, 1, StatementMethods[i],
 			   NULL);
 	Tcl_DecrRefCount(nameObj);
     }
@@ -5756,7 +5771,7 @@ Tdbcodbc_Init(
     /* Attach the constructor to the 'tablesStatement' class */
 
     Tcl_ClassSetConstructor(interp, curClass,
-			    Tcl_NewMethod(interp, curClass, NULL, 1,
+			    Tcl_NewMethod2(interp, curClass, NULL, 1,
 					  &TablesStatementConstructorType,
 					  NULL));
 
@@ -5774,7 +5789,7 @@ Tdbcodbc_Init(
     /* Attach the constructor to the 'columnsStatement' class */
 
     Tcl_ClassSetConstructor(interp, curClass,
-			    Tcl_NewMethod(interp, curClass, NULL, 1,
+			    Tcl_NewMethod2(interp, curClass, NULL, 1,
 					  &ColumnsStatementConstructorType,
 					  NULL));
 
@@ -5792,7 +5807,7 @@ Tdbcodbc_Init(
     /* Attach the constructor to the 'primarykeysStatement' class */
 
     Tcl_ClassSetConstructor(interp, curClass,
-			    Tcl_NewMethod(interp, curClass, NULL, 1,
+			    Tcl_NewMethod2(interp, curClass, NULL, 1,
 					  &PrimarykeysStatementConstructorType,
 					  NULL));
 
@@ -5810,7 +5825,7 @@ Tdbcodbc_Init(
     /* Attach the constructor to the 'foreignkeysStatement' class */
 
     Tcl_ClassSetConstructor(interp, curClass,
-			    Tcl_NewMethod(interp, curClass, NULL, 1,
+			    Tcl_NewMethod2(interp, curClass, NULL, 1,
 					  &ForeignkeysStatementConstructorType,
 					  NULL));
 
@@ -5828,7 +5843,7 @@ Tdbcodbc_Init(
     /* Attach the constructor to the 'evaldirectStatement' class */
 
     Tcl_ClassSetConstructor(interp, curClass,
-			    Tcl_NewMethod(interp, curClass, NULL, 1,
+			    Tcl_NewMethod2(interp, curClass, NULL, 1,
 					  &EvaldirectStatementConstructorType,
 					  (void *) NULL));
 
@@ -5846,7 +5861,7 @@ Tdbcodbc_Init(
     /* Attach the constructor to the 'typesStatement' class */
 
     Tcl_ClassSetConstructor(interp, curClass,
-			    Tcl_NewMethod(interp, curClass, NULL, 1,
+			    Tcl_NewMethod2(interp, curClass, NULL, 1,
 					  &TypesStatementConstructorType,
 					  NULL));
 
@@ -5864,7 +5879,7 @@ Tdbcodbc_Init(
     /* Attach the constructor to the 'resultSet' class */
 
     Tcl_ClassSetConstructor(interp, curClass,
-			    Tcl_NewMethod(interp, curClass, NULL, 1,
+			    Tcl_NewMethod2(interp, curClass, NULL, 1,
 					  &ResultSetConstructorType,
 					  NULL));
 
@@ -5873,33 +5888,33 @@ Tdbcodbc_Init(
     for (i = 0; ResultSetMethods[i] != NULL; ++i) {
 	nameObj = Tcl_NewStringObj(ResultSetMethods[i]->name, -1);
 	Tcl_IncrRefCount(nameObj);
-	Tcl_NewMethod(interp, curClass, nameObj, 1, ResultSetMethods[i],
+	Tcl_NewMethod2(interp, curClass, nameObj, 1, ResultSetMethods[i],
 			   NULL);
 	Tcl_DecrRefCount(nameObj);
     }
     nameObj = Tcl_NewStringObj("nextlist", -1);
     Tcl_IncrRefCount(nameObj);
-    Tcl_NewMethod(interp, curClass, nameObj, 1, &ResultSetNextrowMethodType,
+    Tcl_NewMethod2(interp, curClass, nameObj, 1, &ResultSetNextrowMethodType,
 		  INT2PTR(1));
     Tcl_DecrRefCount(nameObj);
     nameObj = Tcl_NewStringObj("nextdict", -1);
     Tcl_IncrRefCount(nameObj);
-    Tcl_NewMethod(interp, curClass, nameObj, 1, &ResultSetNextrowMethodType,
+    Tcl_NewMethod2(interp, curClass, nameObj, 1, &ResultSetNextrowMethodType,
 		  INT2PTR(0));
     Tcl_DecrRefCount(nameObj);
 
     IncrPerInterpRefCount(pidata);
-    Tcl_CreateObjCommand(interp, "tdbc::odbc::datasources",
+    Tcl_CreateObjCommand2(interp, "tdbc::odbc::datasources",
 			 DatasourcesObjCmd, pidata, DeleteCmd);
     IncrPerInterpRefCount(pidata);
-    Tcl_CreateObjCommand(interp, "tdbc::odbc::drivers",
+    Tcl_CreateObjCommand2(interp, "tdbc::odbc::drivers",
 			 DriversObjCmd, pidata, DeleteCmd);
 
     if (SQLConfigDataSourceW != NULL && SQLInstallerError != NULL) {
-	Tcl_CreateObjCommand(interp, "tdbc::odbc::datasource",
+	Tcl_CreateObjCommand2(interp, "tdbc::odbc::datasource",
 			     DatasourceObjCmdW, NULL, NULL);
     } else if (SQLConfigDataSource != NULL && SQLInstallerError != NULL) {
-	Tcl_CreateObjCommand(interp, "tdbc::odbc::datasource",
+	Tcl_CreateObjCommand2(interp, "tdbc::odbc::datasource",
 			     DatasourceObjCmdA, NULL, NULL);
     }
 
