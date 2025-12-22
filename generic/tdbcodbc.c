@@ -901,7 +901,7 @@ GetWCharStringFromObj(
 	len *= 2;	/* doubled space for surrogates */
 	shrink = 1;
     }
-    retval = wcPtr = (SQLWCHAR*) ckalloc(len);
+    retval = wcPtr = (SQLWCHAR*)Tcl_Alloc(len);
 
     if (sizeofSQLWCHAR == sizeof(unsigned short)) {
 	unsigned short *ptr16 = (unsigned short*) wcPtr;
@@ -960,7 +960,7 @@ GetWCharStringFromObj(
 
     if (shrink) {
 	/* Shrink buffer to fit result */
-	wcPtr = (SQLWCHAR*) ckrealloc(retval, (len + 1) * sizeofSQLWCHAR);
+	wcPtr = (SQLWCHAR*) Tcl_Realloc(retval, (len + 1) * sizeofSQLWCHAR);
 	if (wcPtr != NULL) {
 	    retval = wcPtr;
 	}
@@ -1470,7 +1470,7 @@ GetResultSetDescription(
 	 * data types.
 	 */
 
-	rdata->results = (ParamData*) ckalloc(nColumns * sizeof(ParamData));
+	rdata->results = (ParamData*)Tcl_Alloc(nColumns * sizeof(ParamData));
 	for (i = 0; i < nColumns; ++i) {
 	    retry = 0;
 	    do {
@@ -1494,10 +1494,10 @@ GetResultSetDescription(
 		} else {
 		    colNameAllocLen = (SQLSMALLINT)(2 * colNameLen + 1);
 		    if (colNameW != colNameBuf) {
-			ckfree((char*) colNameW);
+			Tcl_Free((char*) colNameW);
 		    }
 		    colNameW = (SQLWCHAR*)
-			ckalloc(colNameAllocLen * sizeofSQLWCHAR);
+			Tcl_Alloc(colNameAllocLen * sizeofSQLWCHAR);
 		    retry = 1;
 		}
 	    } while (retry);
@@ -1509,7 +1509,7 @@ GetResultSetDescription(
 		snprintf(info, sizeof(info), "(describing result column #%d)", i+1);
 		TransferSQLError(interp, SQL_HANDLE_STMT, hStmt, info);
 		Tcl_DecrRefCount(colNames);
-		ckfree((char*)rdata->results);
+		Tcl_Free((char*)rdata->results);
 		goto cleanup;
 	    }
 
@@ -1563,7 +1563,7 @@ GetResultSetDescription(
  cleanup:
     Tcl_DeleteHashTable(&nameHash);
     if (colNameW != colNameBuf) {
-	ckfree((char*) colNameW);
+	Tcl_Free((char*) colNameW);
     }
     return status;
 
@@ -2044,7 +2044,7 @@ ConnectionConstructor(
 			   (SQLSMALLINT) connectionStringReqLen,
 			   connectionString, 1024, &connectionStringLen,
 			   connectFlags);
-    ckfree((char*) connectionStringReq);
+    Tcl_Free((char*) connectionStringReq);
     if (rc == SQL_NO_DATA) {
 	Tcl_SetObjResult(interp, Tcl_NewStringObj("operation cancelled", -1));
 	SQLFreeHandle(SQL_HANDLE_DBC, hDBC);
@@ -2058,7 +2058,7 @@ ConnectionConstructor(
 
     /* Attach data about the connection to the object metadata */
 
-    cdata = (ConnectionData*) ckalloc(sizeof(ConnectionData));
+    cdata = (ConnectionData*)Tcl_Alloc(sizeof(ConnectionData));
     cdata->refCount = 1;
     cdata->pidata = pidata;
     IncrPerInterpRefCount(pidata);
@@ -2492,7 +2492,7 @@ DeleteConnection(
     SQLFreeHandle(SQL_HANDLE_DBC, cdata->hDBC);
     Tcl_DecrRefCount(cdata->connectionString);
     DecrPerInterpRefCount(cdata->pidata);
-    ckfree((char*) cdata);
+    Tcl_Free((char*) cdata);
 }
 
 /*
@@ -2543,7 +2543,7 @@ NewStatement(
     ConnectionData* cdata,	/* Instance data for the connection */
     Tcl_Object connectionObject	/* Object handle wrapping the instance */
 ) {
-    StatementData* sdata = (StatementData*) ckalloc(sizeof(StatementData));
+    StatementData* sdata = (StatementData*)Tcl_Alloc(sizeof(StatementData));
     sdata->refCount = 1;
     sdata->cdata = cdata;
     sdata->connectionObject = connectionObject;
@@ -2686,7 +2686,7 @@ StatementConstructor(
      * statement. */
 
     Tcl_ListObjLength(NULL, sdata->subVars, &i);
-    sdata->params = (ParamData*) ckalloc(i * sizeof(ParamData));
+    sdata->params = (ParamData*)Tcl_Alloc(i * sizeof(ParamData));
     for (j = 0; j < i; ++j) {
 	/*
 	 * Supply defaults in case the driver doesn't support introspection
@@ -3682,17 +3682,17 @@ DeleteStatement(
 	SQLFreeHandle(SQL_HANDLE_STMT, sdata->hStmt);
     }
     if (sdata->params != NULL) {
-	ckfree((char*) sdata->params);
+	Tcl_Free((char*) sdata->params);
     }
     Tcl_DecrRefCount(sdata->subVars);
     if (sdata->nativeSqlW != NULL) {
-	ckfree((char*) sdata->nativeSqlW);
+	Tcl_Free((char*) sdata->nativeSqlW);
     }
     if (sdata->nativeMatchPatternW != NULL) {
-	ckfree((char*) sdata->nativeMatchPatternW);
+	Tcl_Free((char*) sdata->nativeMatchPatternW);
     }
     DecrConnectionRefCount(sdata->cdata);
-    ckfree((char*)sdata);
+    Tcl_Free((char*)sdata);
 }
 
 /*
@@ -3826,7 +3826,7 @@ ResultSetConstructor(
 
     /* Allocate an object to hold data about this result set */
 
-    rdata = (ResultSetData*) ckalloc(sizeof(ResultSetData));
+    rdata = (ResultSetData*)Tcl_Alloc(sizeof(ResultSetData));
     rdata->refCount = 1;
     rdata->sdata = sdata;
     rdata->hStmt = NULL;
@@ -3855,8 +3855,8 @@ ResultSetConstructor(
     /* Allocate an array to hold SQLWCHAR strings with parameter data */
 
     Tcl_ListObjLength(NULL, sdata->subVars, &nParams);
-    rdata->bindStrings = (SQLCHAR**) ckalloc(nParams * sizeof(SQLCHAR*));
-    rdata->bindStringLengths = (SQLLEN*) ckalloc(nParams * sizeof(SQLLEN));
+    rdata->bindStrings = (SQLCHAR **)Tcl_Alloc(nParams * sizeof(SQLCHAR*));
+    rdata->bindStringLengths = (SQLLEN *)Tcl_Alloc(nParams * sizeof(SQLLEN));
     for (i = 0; i < nParams; ++i) {
 	rdata->bindStrings[i] = NULL;
 	rdata->bindStringLengths[i] = SQL_NULL_DATA;
@@ -3928,11 +3928,11 @@ ResultSetConstructor(
 		 * conversion */
 
 		rdata->bindStrings[nBound] =
-		    (SQLCHAR*) ckalloc(sizeof(double));
+		    (SQLCHAR*)Tcl_Alloc(sizeof(double));
 		if (Tcl_GetDoubleFromObj(interp, paramValObj,
 					 (double*)(rdata->bindStrings[nBound]))
 		    != TCL_OK) {
-		    ckfree((char*)(rdata->bindStrings[nBound]));
+		    Tcl_Free((char*)(rdata->bindStrings[nBound]));
 		    goto is_string;
 		}
 		dataType = SQL_C_DOUBLE;
@@ -3946,12 +3946,12 @@ ResultSetConstructor(
 		/* Pass 64-bit integers through to SQL without conversion */
 
 		rdata->bindStrings[nBound] =
-		    (SQLCHAR*) ckalloc(sizeof(SQLBIGINT));
+		    (SQLCHAR*)Tcl_Alloc(sizeof(SQLBIGINT));
 		if (Tcl_GetWideIntFromObj(interp, paramValObj,
 					  (SQLBIGINT*)
 					  (rdata->bindStrings[nBound]))
 		    != TCL_OK) {
-		    ckfree((char*)(rdata->bindStrings[nBound]));
+		    Tcl_Free((char*)(rdata->bindStrings[nBound]));
 		    goto is_string;
 		}
 		dataType = SQL_C_SBIGINT;
@@ -3968,11 +3968,11 @@ ResultSetConstructor(
 		/* Pass integers through to SQL without conversion */
 
 		rdata->bindStrings[nBound] =
-		    (SQLCHAR*) ckalloc(sizeof(long));
+		    (SQLCHAR*)Tcl_Alloc(sizeof(long));
 		if (Tcl_GetLongFromObj(interp, paramValObj,
 				       (long*)(rdata->bindStrings[nBound]))
 		    != TCL_OK) {
-		    ckfree((char*)(rdata->bindStrings[nBound]));
+		    Tcl_Free((char*)(rdata->bindStrings[nBound]));
 		    goto is_string;
 		}
 		dataType = SQL_C_LONG;
@@ -3995,7 +3995,7 @@ ResultSetConstructor(
 		dataType = SQL_C_BINARY;
 		rdata->bindStringLengths[nBound] = paramExternalLen;
 		rdata->bindStrings[nBound] =
-		    (SQLCHAR*) ckalloc(paramExternalLen);
+		    (SQLCHAR*)Tcl_Alloc(paramExternalLen);
 		memcpy(rdata->bindStrings[nBound], byteArrayPtr,
 		       paramExternalLen);
 		break;
@@ -4028,7 +4028,7 @@ ResultSetConstructor(
 					     &paramExternal);
 		    paramExternalLen = Tcl_DStringLength(&paramExternal);
 		    rdata->bindStrings[nBound] = (SQLCHAR*)
-			ckalloc(paramExternalLen + 1);
+			Tcl_Alloc(paramExternalLen + 1);
 		    memcpy(rdata->bindStrings[nBound],
 			   Tcl_DStringValue(&paramExternal),
 			   paramExternalLen + 1);
@@ -4058,10 +4058,10 @@ ResultSetConstructor(
 			      paramExternalLen,
 			      rdata->bindStringLengths + nBound);
 	if (!SQL_SUCCEEDED(rc)) {
-	    char* info = (char *)ckalloc(80 + strlen(paramName));
+	    char* info = (char *)Tcl_Alloc(80 + strlen(paramName));
 	    snprintf(info, 80 + strlen(paramName), "(binding the '%s' parameter)", paramName);
 	    TransferSQLError(interp, SQL_HANDLE_STMT, rdata->hStmt, info);
-	    ckfree(info);
+	    Tcl_Free(info);
 	    return TCL_ERROR;
 	}
     }
@@ -4561,7 +4561,7 @@ GetCell(
 	    char info[80];
 	    snprintf(info, sizeof(info), "(retrieving result set column #%d)\n", i+1);
 	    TransferSQLError(interp, SQL_HANDLE_STMT, rdata->hStmt, info);
-	    ckfree(info);
+	    Tcl_Free(info);
 	    return TCL_ERROR;
 	}
 	if (colLen != SQL_NULL_DATA && colLen != SQL_NO_TOTAL) {
@@ -4599,7 +4599,7 @@ GetCell(
 	    char info[80];
 	    snprintf(info, sizeof(info), "(retrieving result set column #%d)\n", i+1);
 	    TransferSQLError(interp, SQL_HANDLE_STMT, rdata->hStmt, info);
-	    ckfree(info);
+	    Tcl_Free(info);
 	    return TCL_ERROR;
 	}
 	if (colLen != SQL_NULL_DATA && colLen != SQL_NO_TOTAL) {
@@ -4678,11 +4678,11 @@ GetCell(
 		    colAllocLen += colLen;
 		}
 		if (colPtr == colBuf) {
-		    colPtr = (SQLCHAR*) ckalloc(colAllocLen + sizeofSQLWCHAR);
+		    colPtr = (SQLCHAR*)Tcl_Alloc(colAllocLen + sizeofSQLWCHAR);
 		    memcpy(colPtr, colBuf, BUFSIZE * sizeofSQLWCHAR);
 		} else {
 		    colPtr = (SQLCHAR*)
-			ckrealloc((char*)colPtr, colAllocLen + sizeofSQLWCHAR);
+			Tcl_Realloc((char*)colPtr, colAllocLen + sizeofSQLWCHAR);
 		}
 		retry = 1;
 	    }
@@ -4692,7 +4692,7 @@ GetCell(
 	    snprintf(info, sizeof(info), "(retrieving result set column #%d)\n", i+1);
 	    TransferSQLError(interp, SQL_HANDLE_STMT, rdata->hStmt, info);
 	    if (colPtr != colBuf) {
-		ckfree((char*) colPtr);
+		Tcl_Free((char*) colPtr);
 	    }
 	    return TCL_ERROR;
 	}
@@ -4715,7 +4715,7 @@ GetCell(
 	    }
 	}
 	if (colPtr != colBuf) {
-	    ckfree((char*) colPtr);
+	    Tcl_Free((char*) colPtr);
 	}
 	break;
 
@@ -4798,7 +4798,7 @@ DeleteResultSet(
     }
     DeleteResultSetDescription(rdata);
     DecrStatementRefCount(rdata->sdata);
-    ckfree((char*)rdata);
+    Tcl_Free((char*)rdata);
 }
 static void
 DeleteResultSetDescription(
@@ -4809,7 +4809,7 @@ DeleteResultSetDescription(
 	rdata->resultColNames = NULL;
     }
     if (rdata->results != NULL) {
-	ckfree((char*) (rdata->results));
+	Tcl_Free((char*) (rdata->results));
 	rdata->results = NULL;
     }
 }
@@ -4864,11 +4864,11 @@ FreeBoundParameters(
 	Tcl_ListObjLength(NULL, rdata->sdata->subVars, &nParams);
 	for (i = 0; i < nParams; ++i) {
 	    if (rdata->bindStrings[i] != NULL) {
-		ckfree((char*) rdata->bindStrings[i]);
+		Tcl_Free((char*) rdata->bindStrings[i]);
 	    }
 	}
-	ckfree((char*) rdata->bindStrings);
-	ckfree((char*) rdata->bindStringLengths);
+	Tcl_Free((char*) rdata->bindStrings);
+	Tcl_Free((char*) rdata->bindStringLengths);
 	rdata->bindStrings = NULL;
     }
 }
@@ -4957,7 +4957,7 @@ DatasourcesObjCmd(
 	finished = 1;
 	descAllocLen = descLenNeeded;
 	description = (SQLWCHAR*)
-	    ckalloc(sizeofSQLWCHAR * (descAllocLen + 1));
+	    Tcl_Alloc(sizeofSQLWCHAR * (descAllocLen + 1));
 	Tcl_SetListObj(retval, 0, NULL);
 
 	/* Enumerate the data sources */
@@ -5016,7 +5016,7 @@ DatasourcesObjCmd(
 	    }
 	}
 
-	ckfree((char*) description);
+	Tcl_Free((char*) description);
     }
     Tcl_DecrRefCount(retval);
 
@@ -5088,11 +5088,11 @@ DriversObjCmd(
 	finished = 1;
 	driverAllocLen = driverLenNeeded;
 	driver = (SQLWCHAR*)
-	    ckalloc(sizeofSQLWCHAR * (driverAllocLen + 1));
+	    Tcl_Alloc(sizeofSQLWCHAR * (driverAllocLen + 1));
 	*driver = 0;
 	attrAllocLen = attrLenNeeded;
 	attributes = (SQLWCHAR*)
-	    ckalloc(sizeofSQLWCHAR * (attrAllocLen + 1));
+	    Tcl_Alloc(sizeofSQLWCHAR * (attrAllocLen + 1));
 	*attributes = 0;
 	Tcl_SetListObj(retval, 0, NULL);
 	direction = SQL_FETCH_FIRST;
@@ -5175,8 +5175,8 @@ DriversObjCmd(
 		}
 	    }
 	}
-	ckfree((char*) driver);
-	ckfree((char*) attributes);
+	Tcl_Free((char*) driver);
+	Tcl_Free((char*) attributes);
     }
     Tcl_DecrRefCount(retval);
 
@@ -5286,8 +5286,8 @@ DatasourceObjCmdW(
 
     ok = SQLConfigDataSourceW(NULL, flags[flagIndex].value,
 			      driverName, attributes);
-    ckfree((char*) attributes);
-    ckfree((char*) driverName);
+    Tcl_Free((char*) attributes);
+    Tcl_Free((char*) driverName);
 
     /* Check the ODBC status return */
 
@@ -5682,7 +5682,7 @@ Tdbcodbc_Init(
      * Create per-interpreter data for the package
      */
 
-    pidata = (PerInterpData*) ckalloc(sizeof(PerInterpData));
+    pidata = (PerInterpData*)Tcl_Alloc(sizeof(PerInterpData));
     pidata->refCount = 0;
     pidata->hEnv = GetHEnv(NULL);
     for (i = 0; i < LIT__END; ++i) {
@@ -5948,5 +5948,5 @@ DeletePerInterpData(
     for (i = 0; i < LIT__END; ++i) {
 	Tcl_DecrRefCount(pidata->literals[i]);
     }
-    ckfree((char *) pidata);
+    Tcl_Free((char *) pidata);
 }
