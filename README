@@ -4,7 +4,7 @@ README: tdbcodbc
     Database Connectivity (TDBC) and Open Database Connectivity
     (ODBC), a database-neutral API layer available on all Windows
     systems and many others.. TDBC and its drivers are available from
-    a Fossil version control repository at http://tdbc.tcl.tk/
+    a Fossil version control repository at https://core.tcl-lang.org/tdbcodbc
 
 RCS: @(#) $Id: $
 
@@ -14,9 +14,9 @@ This directory contains the source code, documentation, and test
 scripts for the ODBC driver for Tcl Database Connectivity. This
 module, plus TDBC itself, allow you to access ODBC databases using a
 standard application programming interface (API) from a Tcl script.
-This module is also available from http://tdbc.tcl.tk along with the
-source code of TDBC itself. A bug database and Wiki are available at
-the same location.
+This module is also available from https://core.tcl-lang.org/tdbcodbc
+along with the source code of TDBC itself. A bug database and Wiki are
+available at the same location.
 
 Tdbc::odbc is a freely-available open source package.  You can do
 virtually anything you like with it, such as modifying it,
